@@ -1,0 +1,10 @@
+AllowShortBlocksOnASingleLine: Always
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AllowShortLoopsOnASingleLine: true
+ColumnLimit: 0
+DerivePointerAlignment: true
+EmptyLineBeforeAccessModifier: Never
+IndentWidth: 2
+RemoveBracesLLVM: true
+RemoveParentheses: ReturnStatement
+RemoveSemicolon: true
