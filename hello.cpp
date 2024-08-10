@@ -1,13 +1,5 @@
-#include <algorithm>
-#include <array>
-#include <chrono>
-#include <ios>
-#include <iostream>
-#include <limits>
-#include <type_traits>
-#include <unordered_map>
-#include <unordered_set>
-#include <vector>
+import std;
+import test;
 class Solution {
 public:
   // https://leetcode.com/problems/contains-duplicate/
@@ -47,9 +39,10 @@ public:
     for (auto const& s : strs) {
       std::array<int, 26> k{};
       for (char const& c : s) k[c - 'a']++; // Construct char count as key
-      count_strs[{k.begin(), k.end()}].push_back(s);
+      count_strs[{k.cbegin(), k.cend()}].push_back(s);
     }
     std::vector<std::vector<std::string>> ret;
+    ret.reserve(count_strs.size());
     for (auto const& p : count_strs) ret.push_back(p.second);
     return ret;
   }
@@ -57,7 +50,7 @@ public:
   std::vector<int> topKFrequent(std::vector<int> const& nums, int k) {
     std::unordered_map<int, int> num_count;
     for (int const i : nums) num_count[i]++;
-    std::vector<std::vector<int>> freqs(nums.size() + 1); // Ignore index 0
+    std::vector<std::vector<int>> freqs(nums.size() + 1); // Ignore index 0, fill with initialized
     for (auto const& p : num_count) freqs[p.second].push_back(p.first);
     std::vector<int> ret;
     for (int i{static_cast<int>(nums.size())}; i > 0; i--)
@@ -210,14 +203,16 @@ std::ostream& operator<<(std::ostream& os, std::vector<T> const& vec) {
   os << *(vec.cend() - 1) << ']';
   return os;
 }
-int main() {
+void leetcode_run() {
   Solution sol;
   std::boolalpha(std::cout);
   std::cout << sol.containsDuplicate({1, 1, 1, 3, 3, 4, 3, 2, 4, 2}) << '\n';
   std::cout << sol.isAnagram("anagram", "nagaram") << '\n';
   std::cout << sol.twoSum({2, 7, 11, 15}, 9) << '\n';
+  Timer<std::chrono::microseconds> timer;
   std::cout << sol.groupAnagrams({"eat", "tea", "tan", "ate", "nat", "bat"}) << '\n';
-  std::cout << sol.topKFrequent({1, 1, 1, 2, 2, 3}, 2) << '\n';
+  timer.count();
+  std::cout << "Top K Frequent Elements" << sol.topKFrequent({1, 1, 1, 2, 2, 3}, 2) << '\n';
   std::cout << sol.productExceptSelf({-1, 1, 0, -3, 3}) << '\n';
   std::cout << sol.isValidSudoku({{'5', '3', '.', '.', '7', '.', '.', '.', '.'},
                                   {'6', '.', '.', '1', '9', '5', '.', '.', '.'},
@@ -240,15 +235,17 @@ int main() {
                                   {'.', '.', '.', '.', '8', '.', '.', '7', '9'}})
             << '\n';
   std::cout << sol.longestConsecutive({100, 4, 200, 1, 3, 2}) << '\n';
-  Timer<std::chrono::microseconds> timer;
   std::cout << "Valid Palindrome: " << sol.isPalindrome("A man, a plan, a canal: Panama") << '\n';
-  timer.count();
   std::cout << sol.isPalindrome("race a car") << '\n';
   std::cout << sol.twoSumII({2, 7, 11, 15}, 9) << '\n';
-  std::vector<int> three_sum_vev{-1, 0, 1, 2, -1, -4};
-  std::cout << sol.threeSum(three_sum_vev) << '\n';
+  std::vector<int> three_sum_vec{-1, 0, 1, 2, -1, -4};
+  std::cout << sol.threeSum(three_sum_vec) << '\n';
   std::cout << sol.maxArea({1, 8, 6, 2, 5, 4, 8, 3, 7}) << '\n';
   std::cout << sol.trap({0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1}) << '\n';
   std::cout << sol.findMin({4, 5, 6, 7, 0, 1, 2}) << '\n';
   std::noboolalpha(std::cout);
+}
+int main() {
+  leetcode_run();
+  Derived<int>().print_derived_add(1, 2);
 }

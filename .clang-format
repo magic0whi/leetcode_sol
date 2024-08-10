@@ -1,10 +1,15 @@
 AllowShortBlocksOnASingleLine: Always
+AllowShortCaseLabelsOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: AllIfsAndElse
 AllowShortLoopsOnASingleLine: true
+BreakBeforeConceptDeclarations: Never
 ColumnLimit: 0
-DerivePointerAlignment: true
+DerivePointerAlignment: false
+PointerAlignment: Left
 EmptyLineBeforeAccessModifier: Never
 IndentWidth: 2
 RemoveBracesLLVM: true
+RequiresClausePosition: SingleLine
 RemoveParentheses: ReturnStatement
 RemoveSemicolon: true
+SpaceAfterCStyleCast: true

@@ -1,0 +1,11 @@
+{
+  "version": 9,
+  "configurePresets": [
+    {
+      "name": "default",
+      "displayName": "Default Config",
+      "description": "Default build using Ninja generator",
+      "generator": "Ninja"
+    }
+  ]
+}
