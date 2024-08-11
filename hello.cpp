@@ -1,9 +1,9 @@
 import std;
-import test;
+import leetcode;
 class Solution {
 public:
   // https://leetcode.com/problems/contains-duplicate/
-  bool containsDuplicate(std::vector<int> const& nums) {
+  bool containsDuplicate(std::vector<int> const& nums) noexcept {
     std::unordered_set<int> s;
     for (int const i : nums) {
       if (s.count(i)) return true;
@@ -12,7 +12,7 @@ public:
     return false;
   }
   // https://leetcode.com/problems/valid-anagram/
-  bool isAnagram(std::string const& s, std::string const& t) {
+  bool isAnagram(std::string const& s, std::string const& t) noexcept {
     if (s.size() != t.size()) return false;
     std::unordered_map<char, int> count;
     for (int i = 0; i < s.size(); i++) {
@@ -24,7 +24,7 @@ public:
     return true;
   }
   // https://leetcode.com/problems/two-sum
-  std::vector<int> twoSum(std::vector<int> const& nums, int target) {
+  std::vector<int> twoSum(std::vector<int> const& nums, int target) noexcept {
     std::unordered_map<int, int> num_idx;
     for (int i{}; int x : nums) {
       int y{target - x};                               // x = nums[i], y = target - nums[i]
@@ -34,7 +34,7 @@ public:
     return {};
   }
   // https://leetcode.com/problems/group-anagrams/
-  std::vector<std::vector<std::string>> groupAnagrams(std::vector<std::string> const& strs) {
+  std::vector<std::vector<std::string>> groupAnagrams(std::vector<std::string> const& strs) noexcept {
     std::unordered_map<std::string, std::vector<std::string>> count_strs;
     for (auto const& s : strs) {
       std::array<int, 26> k{};
@@ -47,7 +47,7 @@ public:
     return ret;
   }
   // https://leetcode.com/problems/top-k-frequent-elements/
-  std::vector<int> topKFrequent(std::vector<int> const& nums, int k) {
+  std::vector<int> topKFrequent(std::vector<int> const& nums, int k) noexcept {
     std::unordered_map<int, int> num_count;
     for (int const i : nums) num_count[i]++;
     std::vector<std::vector<int>> freqs(nums.size() + 1); // Ignore index 0, fill with initialized
@@ -61,7 +61,7 @@ public:
     return {};
   }
   // https://leetcode.com/problems/product-of-array-except-self/
-  std::vector<int> productExceptSelf(std::vector<int> const& nums) {
+  std::vector<int> productExceptSelf(std::vector<int> const& nums) noexcept {
     std::vector<int> ret(nums.size(), 1);
     // Pass 1: Calculate prefix
     for (int i{1}; i < nums.size(); i++) ret[i] = ret[i - 1] * nums[i - 1];
@@ -74,7 +74,7 @@ public:
     return ret;
   }
   // https://leetcode.com/problems/valid-sudoku/
-  bool isValidSudoku(std::vector<std::vector<char>> const& board) {
+  bool isValidSudoku(std::vector<std::vector<char>> const& board) noexcept {
     std::unordered_set<char> rows[9], cols[9], squares[9];
     for (int row{}; row < 9; row++)
       for (int col{}; col < 9; col++) {
@@ -104,8 +104,8 @@ public:
   // https://leetcode.com/problems/valid-palindrome/
   bool isPalindrome(std::string const& s) {
     for (int l{}, r{static_cast<int>(s.size()) - 1}; l < r; l++, r--) {
-      auto not_alnum{[](char const& c) constexpr { return !(c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9'); }};
-      auto to_lower{[](char const& c) constexpr { return c > 'Z' ? c - ('a' - 'A') : c; }};
+      auto not_alnum{[](char const& c) { return !(c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9'); }};
+      auto to_lower{[](char const& c) { return c > 'Z' ? c - ('a' - 'A') : c; }};
       while (not_alnum(s[l]) && l < r) l++; // Skip symbols and whitespaces
       while (not_alnum(s[r]) && l < r) r--;
       if (to_lower(s[l]) != to_lower(s[r])) return false;
@@ -183,38 +183,49 @@ class Timer {
   using Clock = std::conditional_t<std::chrono::high_resolution_clock::is_steady,
                                    std::chrono::high_resolution_clock, std::chrono::steady_clock>;
 private:
-  std::chrono::time_point<Clock> m_start_time;
+  std::chrono::time_point<Clock> const m_start_time;
+  std::chrono::time_point<Clock> m_last_time;
 public:
-  Timer() : m_start_time{Clock::now()} {}
+  Timer() noexcept : m_start_time(Clock::now()), m_last_time{Clock::now()} { std::println("Timer start!"); }
   ~Timer() {
-    const auto dur{std::chrono::duration_cast<Res>(Clock::now() - m_start_time)};
-    std::cout << "Time destructored, took " << dur << '\n';
+    std::println("Time destructored, life time {}", std::chrono::duration_cast<Res>(Clock::now() - m_start_time));
   }
-  inline void count() {
-    const auto dur{std::chrono::duration_cast<Res>(Clock::now() - m_start_time)};
-    m_start_time = Clock::now();
-    std::cout << "Time took " << dur << '\n';
+  inline void count() noexcept {
+    std::println("Time took: {}", std::chrono::duration_cast<Res>(Clock::now() - m_last_time));
+    m_last_time = Clock::now();
   }
+  inline void renew() noexcept { m_last_time = Clock::now(); }
 };
 template <typename T>
-std::ostream& operator<<(std::ostream& os, std::vector<T> const& vec) {
+std::ostream& operator<<(std::ostream& os, std::vector<T> const& vec) noexcept {
   os << '[';
   std::for_each(vec.cbegin(), vec.cend() - 1, [&os](T const& t) { os << t << ", "; });
   os << *(vec.cend() - 1) << ']';
   return os;
 }
-void leetcode_run() {
+inline void leetcode_run() {
   Solution sol;
-  std::boolalpha(std::cout);
-  std::cout << sol.containsDuplicate({1, 1, 1, 3, 3, 4, 3, 2, 4, 2}) << '\n';
-  std::cout << sol.isAnagram("anagram", "nagaram") << '\n';
-  std::cout << sol.twoSum({2, 7, 11, 15}, 9) << '\n';
   Timer<std::chrono::microseconds> timer;
-  std::cout << sol.groupAnagrams({"eat", "tea", "tan", "ate", "nat", "bat"}) << '\n';
+  std::println("Contains Duplicate: {}", sol.containsDuplicate({1, 1, 1, 3, 3, 4, 3, 2, 4, 2}));
   timer.count();
-  std::cout << "Top K Frequent Elements" << sol.topKFrequent({1, 1, 1, 2, 2, 3}, 2) << '\n';
-  std::cout << sol.productExceptSelf({-1, 1, 0, -3, 3}) << '\n';
-  std::cout << sol.isValidSudoku({{'5', '3', '.', '.', '7', '.', '.', '.', '.'},
+
+  std::println("Valid Anagram: {}", sol.isAnagram("anagram", "nagaram"));
+  timer.count();
+
+  std::println("Two Sum: {}", sol.twoSum({2, 7, 11, 15}, 9));
+  timer.count();
+
+  std::println("Group Anagrams: {}", sol.groupAnagrams({"eat", "tea", "tan", "ate", "nat", "bat"}));
+  timer.count();
+
+  std::println("Top K Frequent Elements: {}", sol.topKFrequent({1, 1, 1, 2, 2, 3}, 2));
+  timer.count();
+
+  std::println("Product of Array Except Self: {}", sol.productExceptSelf({-1, 1, 0, -3, 3}));
+  timer.count();
+
+  std::println("Valid Sudoku: {}",
+               sol.isValidSudoku({{'5', '3', '.', '.', '7', '.', '.', '.', '.'},
                                   {'6', '.', '.', '1', '9', '5', '.', '.', '.'},
                                   {'.', '9', '8', '.', '.', '.', '.', '6', '.'},
                                   {'8', '.', '.', '.', '6', '.', '.', '.', '3'},
@@ -222,9 +233,10 @@ void leetcode_run() {
                                   {'7', '.', '.', '.', '2', '.', '.', '.', '6'},
                                   {'.', '6', '.', '.', '.', '.', '2', '8', '.'},
                                   {'.', '.', '.', '4', '1', '9', '.', '.', '5'},
-                                  {'.', '.', '.', '.', '8', '.', '.', '7', '9'}})
-            << '\n';
-  std::cout << sol.isValidSudoku({{'8', '3', '.', '.', '7', '.', '.', '.', '.'},
+                                  {'.', '.', '.', '.', '8', '.', '.', '7', '9'}}));
+  timer.count();
+  std::println("Valid Sudoku: {}",
+               sol.isValidSudoku({{'8', '3', '.', '.', '7', '.', '.', '.', '.'},
                                   {'6', '.', '.', '1', '9', '5', '.', '.', '.'},
                                   {'.', '9', '8', '.', '.', '.', '.', '6', '.'},
                                   {'8', '.', '.', '.', '6', '.', '.', '.', '3'},
@@ -232,20 +244,71 @@ void leetcode_run() {
                                   {'7', '.', '.', '.', '2', '.', '.', '.', '6'},
                                   {'.', '6', '.', '.', '.', '.', '2', '8', '.'},
                                   {'.', '.', '.', '4', '1', '9', '.', '.', '5'},
-                                  {'.', '.', '.', '.', '8', '.', '.', '7', '9'}})
-            << '\n';
-  std::cout << sol.longestConsecutive({100, 4, 200, 1, 3, 2}) << '\n';
-  std::cout << "Valid Palindrome: " << sol.isPalindrome("A man, a plan, a canal: Panama") << '\n';
-  std::cout << sol.isPalindrome("race a car") << '\n';
-  std::cout << sol.twoSumII({2, 7, 11, 15}, 9) << '\n';
-  std::vector<int> three_sum_vec{-1, 0, 1, 2, -1, -4};
-  std::cout << sol.threeSum(three_sum_vec) << '\n';
-  std::cout << sol.maxArea({1, 8, 6, 2, 5, 4, 8, 3, 7}) << '\n';
-  std::cout << sol.trap({0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1}) << '\n';
-  std::cout << sol.findMin({4, 5, 6, 7, 0, 1, 2}) << '\n';
-  std::noboolalpha(std::cout);
+                                  {'.', '.', '.', '.', '8', '.', '.', '7', '9'}}));
+  timer.count();
+
+  std::println("Longest Consecutive Sequence: {}", sol.longestConsecutive({100, 4, 200, 1, 3, 2}));
+  timer.count();
+
+  std::println("Valid Palindrome: {}", sol.isPalindrome("A man, a plan, a canal: Panama"));
+  timer.count();
+  std::println("Valid Palindrome: {}", sol.isPalindrome("race a car"));
+  timer.count();
+
+  std::println("Two Sum II - Input Array Is Sorted: {}", sol.twoSumII({2, 7, 11, 15}, 9));
+  timer.count();
+  {
+    std::vector<int> three_sum_vec{-1, 0, 1, 2, -1, -4};
+    timer.renew();
+    std::println("3Sum: {}", sol.threeSum(three_sum_vec));
+    timer.count();
+  }
+  std::println("Container With Most Water: {}", sol.maxArea({1, 8, 6, 2, 5, 4, 8, 3, 7}));
+  timer.count();
+
+  std::println("Trapping Rain Water: {}", sol.trap({0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1}));
+  timer.count();
+
+  std::println("Find Minimum in Rotated Sorted Array: {}", sol.findMin({4, 5, 6, 7, 0, 1, 2}));
+  timer.count();
 }
+namespace custom {
+constexpr double pow(double x, long n) noexcept {
+  if (n > 0) return x * pow(x, n - 1);
+  else return 1;
+}
+constexpr long fact(long n) noexcept {
+  if (n > 1) return n * fact(n - 1);
+  else return 1;
+}
+constexpr double cos(double x) noexcept {
+  constexpr long precision{16L};
+  double y{};
+  for (auto n{0L}; n < precision; n += 2L) y += pow(x, n) / (n & 2L ? -fact(n) : fact(n));
+  return y;
+}
+} // namespace custom
+double gen_random() noexcept {
+  static std::random_device rd;
+  static std::mt19937 gen(rd());
+  static std::uniform_real_distribution<double> dis(-1.0, 1.0);
+  return dis(gen);
+}
+volatile double sink{}; // ensures a side effect
 int main() {
-  leetcode_run();
-  Derived<int>().print_derived_add(1, 2);
+  // Test
+  for (const auto x : {0.125, 0.25, 0.5, 1. / (1 << 26)})
+    std::print("x = {1}\n{2:.{0}}\n{3:.{0}}\nIs equal: {4}\n", 53, x, std::cos(x), custom::cos(x), std::cos(x) == custom::cos(x));
+  auto benchmark = [](auto&& fun, auto rem) {
+    auto const start{std::chrono::high_resolution_clock::now()};
+    for (auto size{1UL}; size != 10'000'000UL; ++size) sink = fun(gen_random());
+    std::chrono::duration<double> const diff{std::chrono::high_resolution_clock::now() - start};
+    std::println("Time: {:f} sec {}", diff.count(), rem);
+  };
+  benchmark(custom::cos, "(custom::cos)");
+  benchmark([](double x) { return std::cos(x); }, "(std::cos)");
 }
+
+// int main() {
+// leetcode_run();
+// }

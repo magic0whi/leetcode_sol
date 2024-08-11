@@ -3,9 +3,80 @@
   "configurePresets": [
     {
       "name": "default",
+      "binaryDir": "${sourceDir}/build",
       "displayName": "Default Config",
       "description": "Default build using Ninja generator",
-      "generator": "Ninja"
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "$env{PGO_FLAGS}"
+      }
+    },
+    {
+      "name": "pgo-gen",
+      "inherits": "default",
+      "environment": {
+        "PGO_FLAGS": "-fprofile-generate"
+      }
+    },
+    {
+      "name": "pgo-use",
+      "inherits": "default",
+      "environment": {
+        "PGO_FLAGS": "-fprofile-use"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "pgo-gen",
+      "configurePreset": "pgo-gen"
+    },
+    {
+      "name": "pgo-use",
+      "configurePreset": "pgo-use"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "pgo-gen",
+      "configurePreset": "pgo-gen",
+      "filter": {
+        "include": {
+          "label": "performance"
+        }
+      }
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "pgo-gen",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "pgo-gen"
+        },
+        {
+          "type": "build",
+          "name": "pgo-gen"
+        },
+        {
+          "type": "test",
+          "name": "pgo-gen"
+        }
+      ]
+    },
+    {
+      "name": "pgo-use",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "pgo-use"
+        },
+        {
+          "type": "build",
+          "name": "pgo-use"
+        }
+      ]
     }
   ]
 }

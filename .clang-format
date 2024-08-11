@@ -1,7 +1,12 @@
 AllowShortBlocksOnASingleLine: Always
 AllowShortCaseLabelsOnASingleLine: true
+AllowShortCompoundRequirementOnASingleLine: true
+AllowShortEnumsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: All
 AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AllowShortLambdasOnASingleLine: true
 AllowShortLoopsOnASingleLine: true
+BreakAfterAttributes: Leave
 BreakBeforeConceptDeclarations: Never
 ColumnLimit: 0
 DerivePointerAlignment: false
