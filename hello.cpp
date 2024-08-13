@@ -1,3 +1,6 @@
+#include <cassert>
+#include <limits>
+#include <type_traits>
 import std;
 import leetcode;
 class Solution {
@@ -15,10 +18,8 @@ public:
   bool isAnagram(std::string const& s, std::string const& t) noexcept {
     if (s.size() != t.size()) return false;
     std::unordered_map<char, int> count;
-    for (int i = 0; i < s.size(); i++) {
-      count[s[i]]++;
-      count[t[i]]--;
-    }
+    for (int i = 0; i < s.size(); i++)
+      count[s[i]]++, count[t[i]]--;
     for (auto const& i : count)
       if (i.second != 0) return false;
     return true;
@@ -295,20 +296,32 @@ double gen_random() noexcept {
   return dis(gen);
 }
 volatile double sink{}; // ensures a side effect
-int main() {
-  // Test
-  for (const auto x : {0.125, 0.25, 0.5, 1. / (1 << 26)})
-    std::print("x = {1}\n{2:.{0}}\n{3:.{0}}\nIs equal: {4}\n", 53, x, std::cos(x), custom::cos(x), std::cos(x) == custom::cos(x));
-  auto benchmark = [](auto&& fun, auto rem) {
-    auto const start{std::chrono::high_resolution_clock::now()};
-    for (auto size{1UL}; size != 10'000'000UL; ++size) sink = fun(gen_random());
-    std::chrono::duration<double> const diff{std::chrono::high_resolution_clock::now() - start};
-    std::println("Time: {:f} sec {}", diff.count(), rem);
-  };
-  benchmark(custom::cos, "(custom::cos)");
-  benchmark([](double x) { return std::cos(x); }, "(std::cos)");
-}
 
-// int main() {
-// leetcode_run();
-// }
+class Base {
+public:
+  Base() {}
+  virtual ~Base() {}
+};
+class Derived : public Base {
+  // ...
+};
+
+int main() {
+  // Test the consistency with std::cos()
+  // for (const auto x : {0.125, 0.25, 0.5, 1. / (1 << 26)})
+  //   std::print("x = {1}\n{2:.{0}}\n{3:.{0}}\nIs equal: {4}\n", 53, x, std::cos(x), custom::cos(x), std::cos(x) == custom::cos(x));
+  // auto benchmark = [](auto&& fun, auto rem) {
+  //   auto const start{std::chrono::high_resolution_clock::now()};
+  //   for (auto size{1UL}; size != 10'000'000UL; ++size) sink = fun(gen_random());
+  //   std::chrono::duration<double> const diff{std::chrono::high_resolution_clock::now() - start};
+  //   std::println("Time: {:f} sec {}", diff.count(), rem);
+  // };
+  // benchmark(custom::cos, "(custom::cos)");
+  // benchmark([](double x) { return std::cos(x); }, "(std::cos)");
+  int a{1};
+  int& b{a};
+  int& c{b};
+  c = 2;
+  std::println("a: {}", a);
+  // leetcode_run();
+}

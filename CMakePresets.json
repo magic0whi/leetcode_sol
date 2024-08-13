@@ -6,75 +6,109 @@
       "binaryDir": "${sourceDir}/build",
       "displayName": "Default Config",
       "description": "Default build using Ninja generator",
-      "generator": "Ninja",
+      "generator": "Ninja"
+    },
+    {
+      "name": "debug",
+      "inherits": "default",
       "cacheVariables": {
-        "CMAKE_CXX_FLAGS": "$env{PGO_FLAGS}"
+        "CMAKE_BUILD_TYPE": "Debug"
       }
     },
     {
-      "name": "pgo-gen",
+      "name": "pgotrain",
       "inherits": "default",
-      "environment": {
-        "PGO_FLAGS": "-fprofile-generate"
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "PGOTRAIN"
       }
     },
     {
-      "name": "pgo-use",
+      "name": "pgobuild",
       "inherits": "default",
-      "environment": {
-        "PGO_FLAGS": "-fprofile-use"
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "PGOBUILD"
       }
     }
   ],
   "buildPresets": [
     {
-      "name": "pgo-gen",
-      "configurePreset": "pgo-gen"
+      "name": "debug",
+      "configurePreset": "debug"
     },
     {
-      "name": "pgo-use",
-      "configurePreset": "pgo-use"
+      "name": "pgotrain",
+      "configurePreset": "pgotrain"
+    },
+    {
+      "name": "pgobuild",
+      "configurePreset": "pgobuild"
     }
   ],
   "testPresets": [
     {
-      "name": "pgo-gen",
-      "configurePreset": "pgo-gen",
+      "name": "pgotrain",
+      "configurePreset": "pgotrain",
       "filter": {
         "include": {
-          "label": "performance"
+          "name": "train"
+        }
+      }
+    },
+    {
+      "name": "pgobuild",
+      "configurePreset": "pgobuild",
+      "filter": {
+        "include": {
+          "name": "run"
         }
       }
     }
   ],
   "workflowPresets": [
     {
-      "name": "pgo-gen",
+      "name": "debug",
       "steps": [
         {
           "type": "configure",
-          "name": "pgo-gen"
+          "name": "debug"
         },
         {
           "type": "build",
-          "name": "pgo-gen"
-        },
-        {
-          "type": "test",
-          "name": "pgo-gen"
+          "name": "debug"
         }
       ]
     },
     {
-      "name": "pgo-use",
+      "name": "pgotrain",
       "steps": [
         {
           "type": "configure",
-          "name": "pgo-use"
+          "name": "pgotrain"
         },
         {
           "type": "build",
-          "name": "pgo-use"
+          "name": "pgotrain"
+        },
+        {
+          "type": "test",
+          "name": "pgotrain"
+        }
+      ]
+    },
+    {
+      "name": "pgobuild",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "pgobuild"
+        },
+        {
+          "type": "build",
+          "name": "pgobuild"
+        },
+        {
+          "type": "test",
+          "name": "pgobuild"
         }
       ]
     }
