@@ -289,11 +289,25 @@ public:
       } else stk.push(stoi(c));
     return stk.top();
   }
+  // https://leetcode.com/problems/search-in-rotated-sorted-array/
+  int search(std::vector<int> const& nums, int target) {
+    for (int l{}, r{static_cast<int>(nums.size()) - 1}; l <= r;) {
+      int m{(l + r) / 2};
+      if (nums[m] == target) return m;
+      if (nums[m] < nums[l])                                  // In right sub array, so certainly right-hand is monotonic ascending
+        if (nums[m] < target && target <= nums[r]) l = m + 1; // Check whether target is in right-hand side
+        else r = m - 1;
+      else // In left sub array
+        if (nums[l] <= target && target < nums[m]) r = m - 1;
+        else l = m + 1;
+    }
+    return -1;
+  }
 };
-template <typename T>
-std::ostream& operator<<(std::ostream& os, std::vector<T> const& vec) noexcept {
-  os << '[';
-  std::for_each(vec.cbegin(), vec.cend() - 1, [&os](T const& t) { os << t << ", "; });
-  os << *(vec.cend() - 1) << ']';
-  return os;
-}
+// template <typename T>
+// std::ostream& operator<<(std::ostream& os, std::vector<T> const& vec) noexcept {
+//   os << '[';
+//   std::for_each(vec.cbegin(), vec.cend() - 1, [&os](T const& t) { os << t << ", "; });
+//   os << *(vec.cend() - 1) << ']';
+//   return os;
+// }

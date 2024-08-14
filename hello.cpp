@@ -38,6 +38,7 @@ struct std::formatter<Vector2, char> {
   }
 };
 int main() {
+  std::println("{}", std::vector<int>{2, 3, 3, 4});
   Point pt{{1.0f, 2.0f, 3.0f, 4.0f}};
   std::println("{}", pt);
   std::print("{}", pt.vec2x2.xy), std::println("{}", pt.vec2x2.zw);
@@ -45,5 +46,5 @@ int main() {
   pt.vec4.z = 500.0f;
   std::println("{}", pt);
   std::print("{}", pt.vec2x2.xy), std::println("{}", pt.vec2x2.zw);
-  // leetcode_run();
+  leetcode_run();
 }
