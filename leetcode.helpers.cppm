@@ -6,6 +6,12 @@ _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
 import std;
 _Pragma("GCC diagnostic pop");
 // clang-format on
+export template <typename T> // Another way using function name with signature
+constexpr std::string_view type_name() noexcept {
+  std::string_view capt{std::source_location::current().function_name()}; // Or "__PRETTY_FUNCTION__" for < c++20
+  // e.g. "static_string type_name2() [T = const int &]"
+  return {capt.cbegin() + capt.find('=') + 2, capt.cend() - 1};
+}
 export template <class Res = std::chrono::milliseconds>
 class Timer {
   using Clock = std::conditional_t<std::chrono::high_resolution_clock::is_steady,

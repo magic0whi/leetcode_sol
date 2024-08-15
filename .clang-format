@@ -6,6 +6,7 @@ AllowShortFunctionsOnASingleLine: All
 AllowShortIfStatementsOnASingleLine: AllIfsAndElse
 AllowShortLambdasOnASingleLine: true
 AllowShortLoopsOnASingleLine: true
+AlwaysBreakTemplateDeclarations: No
 BreakAfterAttributes: Leave
 BreakBeforeConceptDeclarations: Never
 ColumnLimit: 0

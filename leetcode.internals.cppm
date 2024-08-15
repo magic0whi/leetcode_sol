@@ -297,7 +297,7 @@ public:
       if (nums[m] < nums[l])                                  // In right sub array, so certainly right-hand is monotonic ascending
         if (nums[m] < target && target <= nums[r]) l = m + 1; // Check whether target is in right-hand side
         else r = m - 1;
-      else // In left sub array
+      else // In left sub array, or itself is left pointer
         if (nums[l] <= target && target < nums[m]) r = m - 1;
         else l = m + 1;
     }

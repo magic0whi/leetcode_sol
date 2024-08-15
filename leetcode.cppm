@@ -112,4 +112,5 @@ export inline void leetcode_run() noexcept {
   std::println("Find Minimum in Rotated Sorted Array: {}", sol.findMin({4, 5, 6, 7, 0, 1, 2}));
   timer.count();
   std::println("Search in Rotated Sorted Array {}", sol.search({4, 5, 6, 7, 0, 1, 2}, 0));
+  timer.count();
 }
