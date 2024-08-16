@@ -372,7 +372,7 @@ public:
       int a_las2{m1 > 0 ? (*a)[m1 - 1] : std::numeric_limits<int>::min()};                       // Cases when m1 is on the leftmost
       int a_las1{m1 < static_cast<int>(a->size()) ? (*a)[m1] : std::numeric_limits<int>::max()}; // Cases when m1 is on the rightmost
       int b_las2{m2 > 0 ? (*b)[m2 - 1] : std::numeric_limits<int>::min()};
-      int b_las1{m2 < static_cast<int>(a->size()) ? (*a)[m2] : std::numeric_limits<int>::max()};
+      int b_las1{m2 < static_cast<int>(b->size()) ? (*b)[m2] : std::numeric_limits<int>::max()};
       if (a_las2 <= b_las1 && b_las2 <= a_las1)
         if (total_len % 2) return std::max(a_las2, b_las2);
         else return (std::max(a_las2, b_las2) + std::min(a_las1, b_las1)) / 2.0;

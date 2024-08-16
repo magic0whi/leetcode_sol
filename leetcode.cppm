@@ -127,5 +127,7 @@ export inline void leetcode_run() noexcept {
   std::println("Median of Two Sorted Arrays: {}", sol.findMedianSortedArrays({1, 2, 3, 4}, {1, 2, 3, 4, 5, 6, 7, 8, 9}));
   timer.count();
   std::println("Median of Two Sorted Arrays: {}", sol.findMedianSortedArrays({1, 3}, {2}));
+  std::println("Median of Two Sorted Arrays: {}", sol.findMedianSortedArrays({1, 2}, {3, 4}));
+
   timer.count();
 }
