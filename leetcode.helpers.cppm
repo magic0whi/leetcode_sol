@@ -30,3 +30,10 @@ public:
   }
   inline void renew() noexcept { m_last_time = Clock::now(); }
 };
+// template <typename T>
+// std::ostream& operator<<(std::ostream& os, std::vector<T> const& vec) noexcept {
+//   os << '[';
+//   std::for_each(vec.cbegin(), vec.cend() - 1, [&os](T const& t) { os << t << ", "; });
+//   os << *(vec.cend() - 1) << ']';
+//   return os;
+// }

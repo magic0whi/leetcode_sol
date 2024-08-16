@@ -6,15 +6,6 @@ _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
 import std;
 _Pragma("GCC diagnostic pop");
 // clang-format on
-class MinStack {
-private:
-  std::stack<std::pair<int, int>> m_stk;
-public:
-  void push(int val) noexcept { m_stk.push({val, m_stk.empty() ? val : std::min(val, m_stk.top().second)}); }
-  void pop() noexcept { m_stk.pop(); }
-  int top() noexcept { return m_stk.top().first; }
-  int getMin() noexcept { return m_stk.top().second; }
-};
 class Solution {
 public:
   // https://leetcode.com/problems/contains-duplicate/
@@ -125,6 +116,16 @@ public:
     }
     return true;
   }
+  // https://leetcode.com/problems/min-stack/description/
+  class MinStack {
+  private:
+    std::stack<std::pair<int, int>> m_stk;
+  public:
+    void push(int val) noexcept { m_stk.push({val, m_stk.empty() ? val : std::min(val, m_stk.top().second)}); }
+    void pop() noexcept { m_stk.pop(); }
+    int top() noexcept { return m_stk.top().first; }
+    int getMin() noexcept { return m_stk.top().second; }
+  };
   // https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/
   std::vector<int> twoSumII(std::vector<int> const& nums, int target) noexcept {
     int l{}, r{static_cast<int>(nums.size()) - 1};
@@ -290,7 +291,7 @@ public:
     return stk.top();
   }
   // https://leetcode.com/problems/search-in-rotated-sorted-array/
-  int search(std::vector<int> const& nums, int target) {
+  int search(std::vector<int> const& nums, int target) noexcept {
     for (int l{}, r{static_cast<int>(nums.size()) - 1}; l <= r;) {
       int m{(l + r) / 2};
       if (nums[m] == target) return m;
@@ -303,11 +304,81 @@ public:
     }
     return -1;
   }
+  // https://leetcode.com/problems/time-based-key-value-store/
+  class TimeMap {
+  private:
+    std::unordered_map<std::string, std::vector<std::pair<int, std::string>>> key_pairs;
+  public:
+    TimeMap() noexcept = default;
+    void set(std::string const& key, std::string const& value, int const timestamp) noexcept { key_pairs[key].emplace_back(timestamp, value); }
+    std::string get(std::string const& key, int timestamp) noexcept {
+      auto& values{key_pairs[key]};
+      std::string ret{};
+      for (int l{}, r{static_cast<int>(values.size()) - 1}; l <= r;) {
+        int m{(l + r) / 2};
+        // Elements' timestamp less than required, save to 'ret' for cases that no exactly same timestamp
+        if (std::strong_ordering cmp = values[m].first <=> timestamp; cmp < 0) ret = values[m].second, l = m + 1;
+        else if (cmp > 0) r = m - 1;  // Or elements' timestamp bigger than required
+        else return values[m].second; // Or equal
+      }
+      return ret;
+    }
+  };
+  // https://leetcode.com/problems/median-of-two-sorted-arrays/
+  double findMedianSortedArrays(std::vector<int> const& nums1, std::vector<int> const& nums2) noexcept {
+    // ==== Case 1
+    // a = [2], b = [1, 3], total_len = 3, half_len = 2
+    // Loop 1: l = 0, r = 1, m1 = 0, m2 = 2 - 0 = 2
+    //
+    // null    [2]
+    // ^a_las2  ^a_las1
+    // ----------------------------
+    //         [1       3]      null
+    //                  ^b_las2 ^b_las1
+    // Loop 1 check: b_las2 > a_las1 failed, enlarge, l = 0 + 1 = 1
+    // Loop 2: l = 1, r = 1, m1 = 1, m2 = 2 - 1 = 1
+    //
+    //         [2]      null
+    //          ^a_las2 ^a_las1
+    // ----------------------------
+    //         [1       3]
+    //          ^b_las2 ^b_las1
+    // Loop 2 check: pass, odd, return max(a_las2, b_las2)
+    //
+    // ==== Case 2
+    // a = [1, 2], b = [3, 4], total_len = 4, half_len = 2
+    // Loop 1: l = 0, r = 2, m1 = 1, m2 = 2 - 1 = 1
+    //         [1       2]
+    //          ^a_las2 ^a_las1
+    // ----------------------------
+    //         [3       4]
+    //          ^b_las2 ^b_las1
+    // Loop 1 check: failed b_las2 > a_las1, enlarge, l = 1 + 1 = 2
+    // Loop 2: l = 2, r = 2, m1 = 2, m2 = 2 - 2 = 0
+    //         [1       2]      null
+    //                  ^a_las2 ^a_las1
+    // ----------------------------
+    //  null   [3       4]
+    //  ^b_las2 ^b_las1
+    // Loop 2 check: pass, even, return (max(a_las2, b_las2) + min(a_las1, b_las1)) / 2
+    // Overall, each of the a_las2, a_las1, b_las2, b_las1 may out of the bound
+    auto const *a{&nums1}, *b{&nums2};
+    if (nums1.size() > nums2.size()) std::swap(a, b);
+    int total_len{static_cast<int>(a->size() + b->size())};
+    int half_len{(total_len + 1) / 2}; // Half length is inclusive
+    for (int l{}, r{static_cast<int>(a->size())}; l <= r;) {
+      int m1{(l + r) / 2};
+      int m2{half_len - m1};
+      int a_las2{m1 > 0 ? (*a)[m1 - 1] : std::numeric_limits<int>::min()};                       // Cases when m1 is on the leftmost
+      int a_las1{m1 < static_cast<int>(a->size()) ? (*a)[m1] : std::numeric_limits<int>::max()}; // Cases when m1 is on the rightmost
+      int b_las2{m2 > 0 ? (*b)[m2 - 1] : std::numeric_limits<int>::min()};
+      int b_las1{m2 < static_cast<int>(a->size()) ? (*a)[m2] : std::numeric_limits<int>::max()};
+      if (a_las2 <= b_las1 && b_las2 <= a_las1)
+        if (total_len % 2) return std::max(a_las2, b_las2);
+        else return (std::max(a_las2, b_las2) + std::min(a_las1, b_las1)) / 2.0;
+      else if (a_las2 > b_las1) r = m1 - 1; // Shrink
+      else l = m1 + 1;                      // Enlarge
+    }
+    return -1;
+  }
 };
-// template <typename T>
-// std::ostream& operator<<(std::ostream& os, std::vector<T> const& vec) noexcept {
-//   os << '[';
-//   std::for_each(vec.cbegin(), vec.cend() - 1, [&os](T const& t) { os << t << ", "; });
-//   os << *(vec.cend() - 1) << ']';
-//   return os;
-// }

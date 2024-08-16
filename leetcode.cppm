@@ -98,9 +98,10 @@ export inline void leetcode_run() noexcept {
   std::println("Valid Parentheses: {}", sol.isValid("(]"));
   timer.count();
   {
-    MinStack stk;
+    Solution::MinStack stk;
     stk.push(-2), stk.push(0), stk.push(-3);
     std::println("Min Stack: {}, {}", stk.getMin(), (stk.pop(), stk.pop(), stk.getMin()));
+    timer.count();
   }
   std::println("Evaluate Reverse Polish Notation: {}", sol.evalRPN({"2", "1", "+", "3", "*"}));
   timer.count();
@@ -112,5 +113,19 @@ export inline void leetcode_run() noexcept {
   std::println("Find Minimum in Rotated Sorted Array: {}", sol.findMin({4, 5, 6, 7, 0, 1, 2}));
   timer.count();
   std::println("Search in Rotated Sorted Array {}", sol.search({4, 5, 6, 7, 0, 1, 2}, 0));
+  timer.count();
+  {
+    Solution::TimeMap timemap;
+    timemap.set("foo", "bar", 1);
+    std::println("Time Based Key-Value Store: {}, {}", timemap.get("foo", 1), timemap.get("foo", 3));
+    timemap.set("foo", "bar2", 4);
+    std::println("Time Based Key-Value Store: {}, {}", timemap.get("foo", 4), timemap.get("foo", 5));
+    timer.count();
+  }
+  std::println("Median of Two Sorted Arrays: {}", sol.findMedianSortedArrays({1, 2, 3, 4}, {1, 2, 3, 4, 5, 6, 7, 8}));
+  timer.count();
+  std::println("Median of Two Sorted Arrays: {}", sol.findMedianSortedArrays({1, 2, 3, 4}, {1, 2, 3, 4, 5, 6, 7, 8, 9}));
+  timer.count();
+  std::println("Median of Two Sorted Arrays: {}", sol.findMedianSortedArrays({1, 3}, {2}));
   timer.count();
 }
