@@ -6,7 +6,14 @@
       "binaryDir": "${sourceDir}/build",
       "displayName": "Default Config",
       "description": "Default build using Ninja generator",
-      "generator": "Ninja"
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "/usr/bin/clang",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
+        "CMAKE_EXE_LINKER_FLAGS": "-fuse-ld=lld",
+        "CMAKE_AR": "/usr/bin/llvm-ar",
+        "CMAKE_RANLIB": "/usr/bin/llvm-ranlib"
+      }
     },
     {
       "name": "debug",
