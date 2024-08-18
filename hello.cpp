@@ -7,5 +7,6 @@ _Pragma("GCC diagnostic pop")
 import leetcode;
 // clang-format on
 int main() {
+  int a{(int) 1.2f};
   leetcode_run();
 }

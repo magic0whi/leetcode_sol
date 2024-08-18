@@ -1,3 +1,5 @@
+AlignTrailingComments:
+  Kind: Leave
 AllowShortBlocksOnASingleLine: Always
 AllowShortCaseLabelsOnASingleLine: true
 AllowShortCompoundRequirementOnASingleLine: true

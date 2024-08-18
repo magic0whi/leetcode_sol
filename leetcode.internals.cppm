@@ -381,4 +381,41 @@ public:
     }
     return -1;
   }
+  // https://leetcode.com/problems/reverse-linked-list/
+  struct ListNode {
+    int val;
+    ListNode* next;
+    constexpr ListNode() noexcept : val{0}, next{nullptr} {}
+    constexpr ListNode(int x) noexcept : val{x}, next{nullptr} {}
+    constexpr ListNode(int x, ListNode* next) noexcept : val{x}, next{next} {}
+    constexpr ListNode(std::initializer_list<int> arr) noexcept : val{*arr.begin()}, next{nullptr} {
+      ListNode* cur{this};
+      for (std::initializer_list<int>::iterator i{arr.begin() + 1}; i != arr.end(); i++) {
+        cur->next = new ListNode{*i};
+        cur = cur->next;
+      }
+    }
+    constexpr ~ListNode() { delete next; }
+  };
+  ListNode* reverseList(ListNode* head) noexcept {
+    // Recursive way
+    // if (!head) return nullptr; // Special case for only null node passed
+    // ListNode* new_head{head};
+    // if (head->next) {
+    //   new_head = reverseList(head->next); // Transfer back the last node
+    //   head->next->next = head; // Let next node point to current node
+    // }
+    // head->next = nullptr; // Let last node point to null, outer recursive will set this corectly
+    // return new_head;
+
+    // Loop way
+    ListNode* pre{nullptr};
+    for (ListNode* cur{head}; cur;) {
+      ListNode* tmp{cur->next}; // tmp stores original next node
+      cur->next = pre; // Change next node's pointer to previous node
+      pre = cur; // Now current node become previous node,
+      cur = tmp; // because we go to the next node, 'cur' will be Null on last node
+    }
+    return pre;
+  }
 };

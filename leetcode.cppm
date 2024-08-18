@@ -99,4 +99,16 @@ export inline void leetcode_run() noexcept {
   std::println("Median of Two Sorted Arrays: {}", sol.findMedianSortedArrays({1, 2, 3, 4}, {1, 2, 3, 4, 5, 6, 7, 8, 9})), timer.count();
   std::println("Median of Two Sorted Arrays: {}", sol.findMedianSortedArrays({1, 3}, {2})), timer.count();
   std::println("Median of Two Sorted Arrays: {}", sol.findMedianSortedArrays({1, 2}, {3, 4})), timer.count();
+  {
+    auto list_node = new Solution::ListNode{1, 2, 3, 4, 5};
+    std::println("Reverse Linked List");
+    timer.renew();
+    list_node = sol.reverseList(list_node);
+    timer.count();
+    std::print("Reverse Linked List: {}", list_node->val);
+    for (Solution::ListNode* head{list_node->next}; head; head = head->next) std::print(" {}", head->val);
+    std::println("");
+    delete list_node;
+    timer.count();
+  }
 }
