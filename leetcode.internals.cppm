@@ -390,10 +390,8 @@ public:
     constexpr ListNode(int x, ListNode* next) noexcept : val{x}, next{next} {}
     constexpr ListNode(std::initializer_list<int> arr) noexcept : val{*arr.begin()}, next{nullptr} {
       ListNode* cur{this};
-      for (std::initializer_list<int>::iterator i{arr.begin() + 1}; i != arr.end(); i++) {
+      for (std::initializer_list<int>::iterator i{arr.begin() + 1}; i != arr.end(); i++, cur = cur->next)
         cur->next = new ListNode{*i};
-        cur = cur->next;
-      }
     }
     constexpr ~ListNode() { delete next; }
   };
@@ -417,5 +415,20 @@ public:
       cur = tmp; // because we go to the next node, 'cur' will be Null on last node
     }
     return pre;
+  }
+  ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) noexcept {
+    ListNode dummy{}, *cur{&dummy};
+    for (; list1 && list2; cur = cur->next) {
+      if (list1->val < list2->val) {
+        cur->next = list1;
+        list1 = list1->next;
+      } else {
+        cur->next = list2;
+        list2 = list2->next;
+      }
+    }
+    cur->next = list1 ? list1 : list2; // Concatenate remaining nodes
+    cur = dummy.next, dummy.next = nullptr; // Prevents list1's and list2's objects being recycled
+    return cur;
   }
 };
