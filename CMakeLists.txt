@@ -32,9 +32,12 @@ endif()
 
 add_library(leetcode STATIC)
 target_sources(leetcode PUBLIC FILE_SET CXX_MODULES FILES leetcode.cppm leetcode.internals.cppm leetcode.helpers.cppm)
+add_library(linalg STATIC)
+target_sources(linalg PUBLIC FILE_SET CXX_MODULES FILES linalg.cppm)
+
 add_executable(hello)
 target_sources(hello PRIVATE hello.cpp)
-target_link_libraries(hello PRIVATE leetcode)
+target_link_libraries(hello PRIVATE leetcode linalg)
 
 enable_testing()
 add_test(NAME run COMMAND hello)

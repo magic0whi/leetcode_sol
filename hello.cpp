@@ -1,12 +1,20 @@
-// clang-format off
-_Pragma("GCC diagnostic push")
-_Pragma("GCC diagnostic ignored \"-Wdeprecated\"")
-_Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
 import std;
-_Pragma("GCC diagnostic pop")
 import leetcode;
-// clang-format on
+import linalg;
 int main() {
-  int a{(int) 1.2f};
-  leetcode_run();
+  std::vector<std::vector<int>> A{{1, 2},
+                                  {3, 4}};
+  std::vector<std::vector<int>> B{{5, 6},
+                                  {7, 0}};
+  try {
+    std::println("{}", A * B);
+  } catch (std::length_error const& e) { std::println("[Error] {}", e.what()); }
+
+  constexpr std::array<std::array<int, 2>, 2> A2{{{1, 2}, {3, 4}}};
+  constexpr std::array<std::array<int, 2>, 2> B2{{{5, 6}, {7, 8}}};
+  try {
+    std::println("{}", A2 * B2);
+  } catch (std::length_error const& e) { std::println("[Error] {}", e.what()); }
+
+  // leetcode_run();
 }

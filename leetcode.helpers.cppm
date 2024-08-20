@@ -1,10 +1,6 @@
 export module leetcode:helpers;
 // clang-format off
-_Pragma("GCC diagnostic push")
-_Pragma("GCC diagnostic ignored \"-Wdeprecated\"")
-_Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
 import std;
-_Pragma("GCC diagnostic pop");
 // clang-format on
 export template <typename T> // Another way using function name with signature
 constexpr std::string_view type_name() noexcept {
@@ -30,6 +26,7 @@ public:
   }
   inline void renew() noexcept { m_last_time = Clock::now(); }
 };
+// No need anymore since C++23's std::print
 // template <typename T>
 // std::ostream& operator<<(std::ostream& os, std::vector<T> const& vec) noexcept {
 //   os << '[';

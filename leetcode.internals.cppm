@@ -418,15 +418,9 @@ public:
   }
   ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) noexcept {
     ListNode dummy{}, *cur{&dummy};
-    for (; list1 && list2; cur = cur->next) {
-      if (list1->val < list2->val) {
-        cur->next = list1;
-        list1 = list1->next;
-      } else {
-        cur->next = list2;
-        list2 = list2->next;
-      }
-    }
+    for (; list1 && list2; cur = cur->next)
+      if (list1->val < list2->val) cur->next = list1, list1 = list1->next;
+      else cur->next = list2, list2 = list2->next;
     cur->next = list1 ? list1 : list2; // Concatenate remaining nodes
     cur = dummy.next, dummy.next = nullptr; // Prevents list1's and list2's objects being recycled
     return cur;
