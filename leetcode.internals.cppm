@@ -21,7 +21,7 @@ public:
   bool isAnagram(std::string const& s, std::string const& t) noexcept {
     if (s.size() != t.size()) return false;
     std::unordered_map<char, int> count;
-    for (int i = 0; i < static_cast<int>(s.size()); i++)
+    for (std::size_t i{}; i < s.size(); i++)
       count[s[i]]++, count[t[i]]--;
     for (auto const& i : count)
       if (i.second != 0) return false;
@@ -51,16 +51,16 @@ public:
     return ret;
   }
   // https://leetcode.com/problems/top-k-frequent-elements/
-  std::vector<int> topKFrequent(std::vector<int> const& nums, int k) noexcept {
+  std::vector<int> topKFrequent(std::vector<int> const& nums, std::size_t k) noexcept {
     std::unordered_map<int, int> num_count;
     for (int const i : nums) num_count[i]++;
     std::vector<std::vector<int>> freqs(nums.size() + 1); // Ignore index 0, fill with initialized
     for (auto const& p : num_count) freqs[p.second].push_back(p.first);
     std::vector<int> ret;
-    for (int i{static_cast<int>(nums.size())}; i > 0; i--)
+    for (std::size_t i{nums.size()}; i > 0; i--)
       for (int const& l : freqs[i]) {
         ret.push_back(l);
-        if (static_cast<int>(ret.size()) == k) return ret;
+        if (ret.size() == k) return ret;
       }
     return {};
   }
@@ -68,10 +68,10 @@ public:
   std::vector<int> productExceptSelf(std::vector<int> const& nums) noexcept {
     std::vector<int> ret(nums.size(), 1);
     // Pass 1: Calculate prefix
-    for (int i{1}; i < static_cast<int>(nums.size()); i++) ret[i] = ret[i - 1] * nums[i - 1];
+    for (std::size_t i{1}; i < nums.size(); i++) ret[i] = ret[i - 1] * nums[i - 1];
     // Pass 2 : Calculate output and postfix
     int postfix{nums[nums.size() - 1]};
-    for (int i{static_cast<int>(nums.size()) - 2}; i >= 0; i--) {
+    for (std::size_t i{nums.size() - 2}; i != std::numeric_limits<std::size_t>::max(); i--) {
       ret[i] *= postfix;
       postfix *= nums[i];
     }
@@ -107,7 +107,7 @@ public:
   }
   // https://leetcode.com/problems/valid-palindrome/
   bool isPalindrome(std::string const& s) noexcept {
-    for (int l{}, r{static_cast<int>(s.size()) - 1}; l < r; l++, r--) {
+    for (std::size_t l{}, r{s.size() - 1}; l < r; l++, r--) {
       auto not_alnum{[](char const& c) { return !((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')); }};
       auto to_lower{[](char const& c) { return c > 'Z' ? c - ('a' - 'A') : c; }};
       while (not_alnum(s[l]) && l < r) l++; // Skip symbols and whitespaces
@@ -141,12 +141,12 @@ public:
   std::vector<std::vector<int>> threeSum(std::vector<int>& nums) noexcept {
     sort(nums.begin(), nums.end());
     std::vector<std::vector<int>> ret;
-    for (int x{}; x < static_cast<int>(nums.size()); x++) { // x, y, z are indices
-      if (nums[x] > 0) break;                               // Avoid nosense calc since positive nums[x] couldn't get result
-      if (x > 0 && nums[x] == nums[x - 1]) continue;        // x > 0 to excluse first loop
+    for (std::size_t x{}; x < nums.size(); x++) { // x, y, z are indices
+      if (nums[x] > 0) break; // Avoid senseless calc since positive nums[x] couldn't get result
+      if (x > 0 && nums[x] == nums[x - 1]) continue; // Prevent duplicate
       // Two Sum II, nums[y] + nums[z] = -nums[x]
-      for (int y{x + 1}, z{static_cast<int>(nums.size()) - 1}; y < z;) {
-        if (nums[y] > -nums[x]) break; // Avoid nosense calc since it's sorted
+      for (std::size_t y{x + 1}, z{nums.size() - 1}; y < z;) {
+        if (nums[y] > -nums[x]) break; // Avoid senseless calc since it's monotonic ascending
         int cur_sum{nums[y] + nums[z]};
         if (cur_sum < -nums[x]) y++;
         else if (cur_sum > -nums[x]) z--;
@@ -160,8 +160,8 @@ public:
   }
   // https://leetcode.com/problems/container-with-most-water/
   int maxArea(std::vector<int> const& height) noexcept {
-    int l{}, r{static_cast<int>(height.size()) - 1}, ret{};
-    while (l < r) { // From outside to inside, goes lower side first
+    std::size_t l{}, r{height.size() - 1}, ret{};
+    while (l < r) { // From outside to inside, lower side goes first
       ret = std::max(ret, (r - l) * std::min(height[l], height[r]));
       height[l] < height[r] ? l++ : r--;
     }
@@ -171,7 +171,7 @@ public:
   int trap(std::vector<int> const& height) noexcept {
     int l{}, r{static_cast<int>(height.size()) - 1}, l_max{height[0]}, r_max{height[r]}, ret{};
     while (l < r)
-      if (l_max < r_max) {                    // Only the lower side matters, so from outside to inside, lower side first.
+      if (l_max < r_max) { // Only the lower side matters, so from outside to inside, lower side first.
         l_max = std::max(l_max, height[++l]); // Try update max height, this also prevents negative trapped water
         ret += l_max - height[l];
       } else {
@@ -182,9 +182,10 @@ public:
   }
   // https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/
   int findMin(std::vector<int> const& nums) noexcept {
-    int l{}, r{static_cast<int>(nums.size()) - 1}, ret{std::numeric_limits<int>::max()};
+    std::size_t l{}, r{nums.size() - 1};
+    int ret{std::numeric_limits<int>::max()};
     while (l <= r) {
-      int m{(l + r) / 2};
+      std::size_t m{(l + r) / 2};
       ret = std::min(ret, nums[m]);
       if (nums[m] > nums[r]) l = m + 1; // In left subarray, min in right side
       else r = m - 1;                   // In right subarray, min either in left or current
@@ -214,12 +215,12 @@ public:
   bool checkInclusion(std::string const& s1, std::string const& s2) noexcept {
     if (s1.size() > s2.size()) return false;
     std::array<int, 26> s1_count{0}, s2_count{0};
-    for (int i{0}; i < static_cast<int>(s1.size()); i++) // Construct a char count array for s1 as well as starting `s1.size()` of s2
+    for (std::size_t i{}; i < s1.size(); i++) // Construct a char count array for s1 as well as starting `s1.size()` of s2
       s1_count[s1[i] - 'a']++, s2_count[s2[i] - 'a']++;
-    int matches{0}; // We don't need compare full hashmap each loop
+    int matches{}; // We don't need compare full hashmap each loop
     for (int i{0}; i < 26; i++)
       if (s1_count[i] == s2_count[i]) matches++;                                                // Window startup
-    for (int l{0}, r{static_cast<int>(s1.size())}; r < static_cast<int>(s2.size()); r++, l++) { // Start r at the end of s1, window size fixed
+    for (std::size_t l{}, r{s1.size()}; r < s2.size(); r++, l++) { // Start r at the end of s1, window size fixed
       if (matches == 26) return true;
       // Right-side process
       int i{s2[r] - 'a'};
@@ -235,10 +236,10 @@ public:
   // https://leetcode.com/problems/minimum-window-substring/
   std::string minWindow(std::string const& s, std::string const& t) noexcept {
     if (s.size() < t.size()) return "";
-    std::unordered_map<char, int> t_diff;
-    for (char c : t) t_diff[c]++;
-    int diff{static_cast<int>(t_diff.size())}, min_l{}, min_len{std::numeric_limits<int>::max()};
-    for (int l{}, r{}; r < static_cast<int>(s.size()); r++) {
+    std::unordered_map<char, std::size_t> t_diff;
+    for (char const c : t) t_diff[c]++;
+    std::size_t diff{t_diff.size()}, min_l{}, min_len{std::numeric_limits<std::size_t>::max()};
+    for (std::size_t l{}, r{}; r < s.size(); r++) {
       if (--t_diff[s[r]] == 0) diff--; // diff only -1 at condition just met, ignore further same chars
       for (; diff == 0; l++)           // If now valid window, shrinking window from left
         if (++t_diff[s[l]] > 0) {      // diff only +1 at condition just no longer satisfy, and try update minimum length
@@ -259,11 +260,11 @@ public:
       if (l > q.front()) q.pop_front(); // Remove out-bounded element in queue
       // if (r >= k - 1) ret[l++] = nums[q.front()]; // Recording maximum start from index k-1
       switch (state) {
-      case 0:
-        ret[l++] = nums[q.front()];
-        break;
       default:
         state--;
+        break;
+      case 0:
+        ret[l++] = nums[q.front()];
       }
     }
     return ret;
@@ -292,10 +293,10 @@ public:
   }
   // https://leetcode.com/problems/search-in-rotated-sorted-array/
   int search(std::vector<int> const& nums, int target) noexcept {
-    for (int l{}, r{static_cast<int>(nums.size()) - 1}; l <= r;) {
-      int m{(l + r) / 2};
+    for (std::size_t l{}, r{nums.size() - 1}; l <= r;) {
+      std::size_t m{(l + r) / 2};
       if (nums[m] == target) return m;
-      if (nums[m] < nums[l])                                  // In right sub array, so certainly right-hand is monotonic ascending
+      if (nums[m] < nums[l]) // In right sub array (monotonic ascending)
         if (nums[m] < target && target <= nums[r]) l = m + 1; // Check whether target is in right-hand side
         else r = m - 1;
       else // In left sub array, or itself is left pointer
@@ -311,13 +312,12 @@ public:
   public:
     TimeMap() noexcept = default;
     void set(std::string const& key, std::string const& value, int const timestamp) noexcept { key_pairs[key].emplace_back(timestamp, value); }
-    std::string get(std::string const& key, int timestamp) noexcept {
-      auto& values{key_pairs[key]};
+    std::string get(std::string const& key, int timestamp) const noexcept {
+      auto const& values{key_pairs.at(key)};
       std::string ret{};
-      for (int l{}, r{static_cast<int>(values.size()) - 1}; l <= r;) {
-        int m{(l + r) / 2};
-        // Elements' timestamp less than required, save to 'ret' for cases that no exactly same timestamp
-        if (std::strong_ordering cmp = values[m].first <=> timestamp; cmp < 0) ret = values[m].second, l = m + 1;
+      for (std::size_t l{}, r{values.size() - 1}; l <= r;) {
+        std::size_t m{(l + r) / 2};
+        if (std::strong_ordering const cmp = values[m].first <=> timestamp; cmp < 0) ret = values[m].second, l = m + 1; // Elements' timestamp less than required, save to 'ret' for cases that no exactly same timestamp
         else if (cmp > 0) r = m - 1;  // Or elements' timestamp bigger than required
         else return values[m].second; // Or equal
       }
@@ -365,19 +365,19 @@ public:
     auto const *a{&nums1}, *b{&nums2};
     if (nums1.size() > nums2.size()) std::swap(a, b);
     int total_len{static_cast<int>(a->size() + b->size())};
-    int half_len{(total_len + 1) / 2}; // Half length is inclusive
+    int half_len{(total_len + 1) / 2}; // Half length is inclusive when total_len is odd
     for (int l{}, r{static_cast<int>(a->size())}; l <= r;) {
       int m1{(l + r) / 2};
       int m2{half_len - m1};
-      int a_las2{m1 > 0 ? (*a)[m1 - 1] : std::numeric_limits<int>::min()};                       // Cases when m1 is on the leftmost
-      int a_las1{m1 < static_cast<int>(a->size()) ? (*a)[m1] : std::numeric_limits<int>::max()}; // Cases when m1 is on the rightmost
+      int a_las2{m1 > 0 ? (*a)[m1 - 1] : std::numeric_limits<int>::min()}; // Cases when m1 is on the leftmost
+      int a_las1{m1 < static_cast<int>(a->size()) ? (*a)[m1] : std::numeric_limits<int>::max()}; // Cases when m1 is on the rightmost + 1
       int b_las2{m2 > 0 ? (*b)[m2 - 1] : std::numeric_limits<int>::min()};
       int b_las1{m2 < static_cast<int>(b->size()) ? (*b)[m2] : std::numeric_limits<int>::max()};
       if (a_las2 <= b_las1 && b_las2 <= a_las1)
-        if (total_len % 2) return std::max(a_las2, b_las2);
+        if (total_len % 2) return std::max(a_las2, b_las2); // If total_len Odd
         else return (std::max(a_las2, b_las2) + std::min(a_las1, b_las1)) / 2.0;
-      else if (a_las2 > b_las1) r = m1 - 1; // Shrink
-      else l = m1 + 1;                      // Enlarge
+      else if (a_las2 > b_las1) r = m1 - 1; // Selection in 'a' shrink, with selection in 'b' enlarge
+      else l = m1 + 1;                      // Selection in 'a' enlarge, with selection in 'b' shrink
     }
     return -1;
   }
