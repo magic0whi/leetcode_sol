@@ -21,8 +21,7 @@ public:
   bool isAnagram(std::string const& s, std::string const& t) const noexcept {
     if (s.size() != t.size()) return false;
     std::unordered_map<char, int> count;
-    for (std::size_t i{}; i < s.size(); i++)
-      count[s[i]]++, count[t[i]]--;
+    for (std::size_t i{}; i < s.size(); i++) count[s[i]]++, count[t[i]]--;
     for (auto const& i : count)
       if (i.second != 0) return false;
     return true;
@@ -84,9 +83,7 @@ public:
       for (int col{}; col < 9; col++) {
         char c{board[row][col]};
         if (c == '.') continue;
-        if (rows[row].count(c) || cols[col].count(c) ||
-            squares[row / 3 * 3 + col / 3].count(c))
-          return false;
+        if (rows[row].count(c) || cols[col].count(c) || squares[row / 3 * 3 + col / 3].count(c)) return false;
         rows[row].insert(c);
         cols[col].insert(c);
         squares[row / 3 * 3 + col / 3].insert(c);
@@ -108,7 +105,9 @@ public:
   // https://leetcode.com/problems/valid-palindrome/
   bool isPalindrome(std::string const& s) const noexcept {
     for (std::size_t l{}, r{s.size() - 1}; l < r; l++, r--) {
-      auto not_alnum{[](char const& c) { return !((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')); }};
+      auto not_alnum{[](char const& c) {
+        return !((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'));
+      }};
       auto to_lower{[](char const& c) { return c > 'Z' ? c - ('a' - 'A') : c; }};
       while (not_alnum(s[l]) && l < r) l++; // Skip symbols and whitespaces
       while (not_alnum(s[r]) && l < r) r--;
@@ -188,16 +187,16 @@ public:
       std::size_t m{(l + r) / 2};
       ret = std::min(ret, nums[m]);
       if (nums[m] > nums[r]) l = m + 1; // In left subarray, min in right side
-      else r = m - 1;                   // In right subarray, min either in left or current
+      else r = m - 1; // In right subarray, min either in left or current
     }
     return ret;
   }
   // https://leetcode.com/problems/best-time-to-buy-and-sell-stock/
   int maxProfit(std::vector<int> const& prices) const noexcept {
     int lowest{prices[0]}, ret{};
-    for (int const p : prices)                         // lowest is left pointer, p is right pointer in the window
+    for (int const p : prices) // lowest is left pointer, p is right pointer in the window
       if (p > lowest) ret = std::max(ret, p - lowest); // Whether profitable, try update the return value
-      else lowest = p;                                 // Or found new history lowest, window shrink
+      else lowest = p; // Or found new history lowest, window shrink
     return ret;
   }
   // https://leetcode.com/problems/longest-substring-without-repeating-characters/
@@ -205,7 +204,8 @@ public:
     std::unordered_set<char> char_set;
     int ret{};
     for (int l{}, r{}; r < static_cast<int>(s.size()); r++) {
-      while (char_set.find(s[r]) != char_set.end()) char_set.erase(s[l++]); // If already in hashset, shrink the window's left to that char
+      while (char_set.find(s[r]) != char_set.end()) char_set.erase(s[l++]); // If already in hashset, shrink the
+      // window's left to that char
       char_set.insert(s[r]);
       ret = std::max(ret, r - l + 1); // Update the size of the sliding window
     }
@@ -215,11 +215,12 @@ public:
   bool checkInclusion(std::string const& s1, std::string const& s2) const noexcept {
     if (s1.size() > s2.size()) return false;
     std::array<int, 26> s1_count{0}, s2_count{0};
-    for (std::size_t i{}; i < s1.size(); i++) // Construct a char count array for s1 as well as starting `s1.size()` of s2
+    for (std::size_t i{}; i < s1.size(); i++) // Construct a char count array for s1 as well as starting
+      // 's1.size()' of s2
       s1_count[s1[i] - 'a']++, s2_count[s2[i] - 'a']++;
     int matches{}; // We don't need compare full hashmap each loop
     for (int i{0}; i < 26; i++)
-      if (s1_count[i] == s2_count[i]) matches++;                                                // Window startup
+      if (s1_count[i] == s2_count[i]) matches++; // Window startup
     for (std::size_t l{}, r{s1.size()}; r < s2.size(); r++, l++) { // Start r at the end of s1, window size fixed
       if (matches == 26) return true;
       // Right-side process
@@ -241,8 +242,8 @@ public:
     std::size_t diff{t_diff.size()}, min_l{}, min_len{std::numeric_limits<std::size_t>::max()};
     for (std::size_t l{}, r{}; r < s.size(); r++) {
       if (--t_diff[s[r]] == 0) diff--; // diff only -1 at condition just met, ignore further same chars
-      for (; diff == 0; l++)           // If now valid window, shrinking window from left
-        if (++t_diff[s[l]] > 0) {      // diff only +1 at condition just no longer satisfy, and try update minimum length
+      for (; diff == 0; l++) // If now valid window, shrinking window from left
+        if (++t_diff[s[l]] > 0) { // diff only +1 at condition just no longer satisfy, and try update minimum length
           diff++;
           if (r - l + 1 < min_len) min_l = l, min_len = r - l + 1;
         }
@@ -251,8 +252,9 @@ public:
   }
   // https://leetcode.com/problems/sliding-window-maximum/
   std::vector<int> maxSlidingWindow(std::vector<int> const& nums, int k) const noexcept {
-    std::vector<int> ret(nums.size() - k + 1); // Initialize with size "nums.size()-k-1" and fill with integer's default zeros, otherwise operations like "ret[i] = 114514" don't work
-    std::deque<int> q;                         // Dual end queue, stores indices
+    std::vector<int> ret(nums.size() - k + 1); // Initialize with size "nums.size()-k-1" and fill with integer's
+    // default zeros, otherwise operations like "ret[i] = 114514" don't work
+    std::deque<int> q; // Dual end queue, stores indices
     int state{k - 1};
     for (int l{}, r{}; r < static_cast<int>(nums.size()); r++) {
       while (!q.empty() && nums[q.back()] < nums[r]) q.pop_back(); // Let queue be monotonic descending
@@ -260,11 +262,8 @@ public:
       if (l > q.front()) q.pop_front(); // Remove out-bounded element in queue
       // if (r >= k - 1) ret[l++] = nums[q.front()]; // Recording maximum start from index k-1
       switch (state) {
-      default:
-        state--;
-        break;
-      case 0:
-        ret[l++] = nums[q.front()];
+      default: state--; break;
+      case 0: ret[l++] = nums[q.front()];
       }
     }
     return ret;
@@ -273,14 +272,19 @@ public:
     std::stack<char> open_parens;
     std::unordered_map<char, char> close_open = {{')', '('}, {'}', '{'}, {']', '['}};
     for (char const c : s)
-      if (!close_open.contains(c)) open_parens.push(c);                                 // If opening parenthese, store to stack.
-      else if (open_parens.empty() || open_parens.top() != close_open[c]) return false; // If closing parenthese, check whether stack is empty or a corresponding opening parenthese in the top of stack.
+      if (!close_open.contains(c)) open_parens.push(c); // If opening parenthese, store to stack.
+      else if (open_parens.empty() || open_parens.top() != close_open[c]) return false; // If closing parenthese,
+      // check whether stack is empty or a corresponding opening parenthese in the top of stack.
       else open_parens.pop();
     return open_parens.empty();
   }
   int evalRPN(std::vector<std::string> const& tokens) const noexcept {
     std::stack<int> stk;
-    auto pop{[&stk]() noexcept { int tmp{stk.top()}; stk.pop(); return tmp; }};
+    auto pop{[&stk]() noexcept {
+      int tmp{stk.top()};
+      stk.pop();
+      return tmp;
+    }};
     for (std::string const& c : tokens)
       if (c == "+") stk.push(pop() + pop());
       else if (c == "-") stk.push(-pop() + pop());
@@ -311,14 +315,18 @@ public:
     std::unordered_map<std::string, std::vector<std::pair<int, std::string>>> key_pairs;
   public:
     TimeMap() noexcept = default;
-    void set(std::string const& key, std::string const& value, int const timestamp) noexcept { key_pairs[key].emplace_back(timestamp, value); }
+    void set(std::string const& key, std::string const& value, int const timestamp) noexcept {
+      key_pairs[key].emplace_back(timestamp, value);
+    }
     std::string get(std::string const& key, int timestamp) const noexcept {
       auto const& values{key_pairs.at(key)};
       std::string ret{};
       for (std::size_t l{}, r{values.size() - 1}; l <= r;) {
         std::size_t m{(l + r) / 2};
-        if (std::strong_ordering const cmp = values[m].first <=> timestamp; cmp < 0) ret = values[m].second, l = m + 1; // Elements' timestamp less than required, save to 'ret' for cases that no exactly same timestamp
-        else if (cmp > 0) r = m - 1;  // Or elements' timestamp bigger than required
+        if (std::strong_ordering const cmp = values[m].first <=> timestamp; cmp < 0)
+          ret = values[m].second, l = m + 1; // Elements' timestamp less than required, save to 'ret' for cases
+          //  that no exactly same timestamp
+        else if (cmp > 0) r = m - 1; // Or elements' timestamp bigger than required
         else return values[m].second; // Or equal
       }
       return ret;
@@ -370,14 +378,16 @@ public:
       int m1{(l + r) / 2};
       int m2{half_len - m1};
       int a_las2{m1 > 0 ? (*a)[m1 - 1] : std::numeric_limits<int>::min()}; // Cases when m1 is on the leftmost
-      int a_las1{m1 < static_cast<int>(a->size()) ? (*a)[m1] : std::numeric_limits<int>::max()}; // Cases when m1 is on the rightmost + 1
+      int a_las1{m1 < static_cast<int>(a->size())
+                   ? (*a)[m1]
+                   : std::numeric_limits<int>::max()}; // Cases when m1 is on the rightmost + 1
       int b_las2{m2 > 0 ? (*b)[m2 - 1] : std::numeric_limits<int>::min()};
       int b_las1{m2 < static_cast<int>(b->size()) ? (*b)[m2] : std::numeric_limits<int>::max()};
       if (a_las2 <= b_las1 && b_las2 <= a_las1)
         if (total_len % 2) return std::max(a_las2, b_las2); // If total_len Odd
         else return (std::max(a_las2, b_las2) + std::min(a_las1, b_las1)) / 2.0;
       else if (a_las2 > b_las1) r = m1 - 1; // Selection in 'a' shrink, with selection in 'b' enlarge
-      else l = m1 + 1;                      // Selection in 'a' enlarge, with selection in 'b' shrink
+      else l = m1 + 1; // Selection in 'a' enlarge, with selection in 'b' shrink
     }
     return -1;
   }

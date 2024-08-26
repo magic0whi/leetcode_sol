@@ -36,9 +36,10 @@ int main() {
   static_assert(is_prvalue<decltype((42))>::value && is_prvalue<decltype((a + b))>::value &&
                 is_prvalue<decltype((S{}))>::value);
 
-  static_assert(is_prvalue<decltype((f()))>::value && // function's return value may be rvalue
-                is_lvalue<decltype(([&a]() -> int& { return a; }()))>::value && // Unless its return type is lvalue reference
-                is_prvalue<decltype((s.A))>::value // Member enumerators are rvalue
+  static_assert(
+    is_prvalue<decltype((f()))>::value && // function's return value may be rvalue
+    is_lvalue<decltype(([&a]() -> int& { return a; }()))>::value && // Unless its return type is lvalue reference
+    is_prvalue<decltype((s.A))>::value // Member enumerators are rvalue
   );
   std::println("{}", (S{} = S{42}).a); // rvalue can be in left
   // f = []() {} // Also, lvalue don't mean it's assignable
