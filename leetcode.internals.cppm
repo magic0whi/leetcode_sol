@@ -9,7 +9,7 @@ _Pragma("GCC diagnostic pop");
 class Solution {
 public:
   // https://leetcode.com/problems/contains-duplicate/
-  bool containsDuplicate(std::vector<int> const& nums) noexcept {
+  bool containsDuplicate(std::vector<int> const& nums) const noexcept {
     std::unordered_set<int> s;
     for (int const i : nums) {
       if (s.count(i)) return true;
@@ -18,7 +18,7 @@ public:
     return false;
   }
   // https://leetcode.com/problems/valid-anagram/
-  bool isAnagram(std::string const& s, std::string const& t) noexcept {
+  bool isAnagram(std::string const& s, std::string const& t) const noexcept {
     if (s.size() != t.size()) return false;
     std::unordered_map<char, int> count;
     for (std::size_t i{}; i < s.size(); i++)
@@ -28,7 +28,7 @@ public:
     return true;
   }
   // https://leetcode.com/problems/two-sum
-  std::vector<int> twoSum(std::vector<int> const& nums, int target) noexcept {
+  std::vector<int> twoSum(std::vector<int> const& nums, int target) const noexcept {
     std::unordered_map<int, int> num_idx;
     for (int i{}; int x : nums) {
       int y{target - x};                               // x = nums[i], y = target - nums[i]
@@ -38,7 +38,7 @@ public:
     return {};
   }
   // https://leetcode.com/problems/group-anagrams/
-  std::vector<std::vector<std::string>> groupAnagrams(std::vector<std::string> const& strs) noexcept {
+  std::vector<std::vector<std::string>> groupAnagrams(std::vector<std::string> const& strs) const noexcept {
     std::unordered_map<std::string, std::vector<std::string>> count_strs;
     for (auto const& s : strs) {
       std::array<int, 26> k{};
@@ -51,7 +51,7 @@ public:
     return ret;
   }
   // https://leetcode.com/problems/top-k-frequent-elements/
-  std::vector<int> topKFrequent(std::vector<int> const& nums, std::size_t k) noexcept {
+  std::vector<int> topKFrequent(std::vector<int> const& nums, std::size_t k) const noexcept {
     std::unordered_map<int, int> num_count;
     for (int const i : nums) num_count[i]++;
     std::vector<std::vector<int>> freqs(nums.size() + 1); // Ignore index 0, fill with initialized
@@ -65,7 +65,7 @@ public:
     return {};
   }
   // https://leetcode.com/problems/product-of-array-except-self/
-  std::vector<int> productExceptSelf(std::vector<int> const& nums) noexcept {
+  std::vector<int> productExceptSelf(std::vector<int> const& nums) const noexcept {
     std::vector<int> ret(nums.size(), 1);
     // Pass 1: Calculate prefix
     for (std::size_t i{1}; i < nums.size(); i++) ret[i] = ret[i - 1] * nums[i - 1];
@@ -78,7 +78,7 @@ public:
     return ret;
   }
   // https://leetcode.com/problems/valid-sudoku/
-  bool isValidSudoku(std::vector<std::vector<char>> const& board) noexcept {
+  bool isValidSudoku(std::vector<std::vector<char>> const& board) const noexcept {
     std::unordered_set<char> rows[9], cols[9], squares[9];
     for (int row{}; row < 9; row++)
       for (int col{}; col < 9; col++) {
@@ -94,7 +94,7 @@ public:
     return true;
   }
   // https://leetcode.com/problems/longest-consecutive-sequence/
-  int longestConsecutive(std::vector<int> const& nums) noexcept {
+  int longestConsecutive(std::vector<int> const& nums) const noexcept {
     std::unordered_set<int> set{nums.begin(), nums.end()};
     int longest{};
     for (int const& n : set)
@@ -106,7 +106,7 @@ public:
     return longest;
   }
   // https://leetcode.com/problems/valid-palindrome/
-  bool isPalindrome(std::string const& s) noexcept {
+  bool isPalindrome(std::string const& s) const noexcept {
     for (std::size_t l{}, r{s.size() - 1}; l < r; l++, r--) {
       auto not_alnum{[](char const& c) { return !((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')); }};
       auto to_lower{[](char const& c) { return c > 'Z' ? c - ('a' - 'A') : c; }};
@@ -123,11 +123,11 @@ public:
   public:
     void push(int val) noexcept { m_stk.push({val, m_stk.empty() ? val : std::min(val, m_stk.top().second)}); }
     void pop() noexcept { m_stk.pop(); }
-    int top() noexcept { return m_stk.top().first; }
-    int getMin() noexcept { return m_stk.top().second; }
+    int top() const noexcept { return m_stk.top().first; }
+    int getMin() const noexcept { return m_stk.top().second; }
   };
   // https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/
-  std::vector<int> twoSumII(std::vector<int> const& nums, int target) noexcept {
+  std::vector<int> twoSumII(std::vector<int> const& nums, int target) const noexcept {
     int l{}, r{static_cast<int>(nums.size()) - 1};
     while (l < r) {
       int cur_sum{nums[l] + nums[r]};
@@ -159,7 +159,7 @@ public:
     return ret;
   }
   // https://leetcode.com/problems/container-with-most-water/
-  int maxArea(std::vector<int> const& height) noexcept {
+  int maxArea(std::vector<int> const& height) const noexcept {
     std::size_t l{}, r{height.size() - 1}, ret{};
     while (l < r) { // From outside to inside, lower side goes first
       ret = std::max(ret, (r - l) * std::min(height[l], height[r]));
@@ -168,7 +168,7 @@ public:
     return ret;
   }
   // https://leetcode.com/problems/trapping-rain-water/
-  int trap(std::vector<int> const& height) noexcept {
+  int trap(std::vector<int> const& height) const noexcept {
     int l{}, r{static_cast<int>(height.size()) - 1}, l_max{height[0]}, r_max{height[r]}, ret{};
     while (l < r)
       if (l_max < r_max) { // Only the lower side matters, so from outside to inside, lower side first.
@@ -181,7 +181,7 @@ public:
     return ret;
   }
   // https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/
-  int findMin(std::vector<int> const& nums) noexcept {
+  int findMin(std::vector<int> const& nums) const noexcept {
     std::size_t l{}, r{nums.size() - 1};
     int ret{std::numeric_limits<int>::max()};
     while (l <= r) {
@@ -193,7 +193,7 @@ public:
     return ret;
   }
   // https://leetcode.com/problems/best-time-to-buy-and-sell-stock/
-  int maxProfit(std::vector<int> const& prices) noexcept {
+  int maxProfit(std::vector<int> const& prices) const noexcept {
     int lowest{prices[0]}, ret{};
     for (int const p : prices)                         // lowest is left pointer, p is right pointer in the window
       if (p > lowest) ret = std::max(ret, p - lowest); // Whether profitable, try update the return value
@@ -201,7 +201,7 @@ public:
     return ret;
   }
   // https://leetcode.com/problems/longest-substring-without-repeating-characters/
-  int lengthOfLongestSubstring(std::string const& s) noexcept {
+  int lengthOfLongestSubstring(std::string const& s) const noexcept {
     std::unordered_set<char> char_set;
     int ret{};
     for (int l{}, r{}; r < static_cast<int>(s.size()); r++) {
@@ -212,7 +212,7 @@ public:
     return ret;
   }
   // https://leetcode.com/problems/permutation-in-string/
-  bool checkInclusion(std::string const& s1, std::string const& s2) noexcept {
+  bool checkInclusion(std::string const& s1, std::string const& s2) const noexcept {
     if (s1.size() > s2.size()) return false;
     std::array<int, 26> s1_count{0}, s2_count{0};
     for (std::size_t i{}; i < s1.size(); i++) // Construct a char count array for s1 as well as starting `s1.size()` of s2
@@ -234,7 +234,7 @@ public:
     return matches == 26;
   }
   // https://leetcode.com/problems/minimum-window-substring/
-  std::string minWindow(std::string const& s, std::string const& t) noexcept {
+  std::string minWindow(std::string const& s, std::string const& t) const noexcept {
     if (s.size() < t.size()) return "";
     std::unordered_map<char, std::size_t> t_diff;
     for (char const c : t) t_diff[c]++;
@@ -250,7 +250,7 @@ public:
     return min_len != std::numeric_limits<int>::max() ? s.substr(min_l, min_len) : "";
   }
   // https://leetcode.com/problems/sliding-window-maximum/
-  std::vector<int> maxSlidingWindow(std::vector<int> const& nums, int k) noexcept {
+  std::vector<int> maxSlidingWindow(std::vector<int> const& nums, int k) const noexcept {
     std::vector<int> ret(nums.size() - k + 1); // Initialize with size "nums.size()-k-1" and fill with integer's default zeros, otherwise operations like "ret[i] = 114514" don't work
     std::deque<int> q;                         // Dual end queue, stores indices
     int state{k - 1};
@@ -269,7 +269,7 @@ public:
     }
     return ret;
   }
-  bool isValid(std::string const& s) noexcept {
+  bool isValid(std::string const& s) const noexcept {
     std::stack<char> open_parens;
     std::unordered_map<char, char> close_open = {{')', '('}, {'}', '{'}, {']', '['}};
     for (char const c : s)
@@ -278,7 +278,7 @@ public:
       else open_parens.pop();
     return open_parens.empty();
   }
-  int evalRPN(std::vector<std::string> const& tokens) noexcept {
+  int evalRPN(std::vector<std::string> const& tokens) const noexcept {
     std::stack<int> stk;
     auto pop{[&stk]() noexcept { int tmp{stk.top()}; stk.pop(); return tmp; }};
     for (std::string const& c : tokens)
@@ -292,7 +292,7 @@ public:
     return stk.top();
   }
   // https://leetcode.com/problems/search-in-rotated-sorted-array/
-  int search(std::vector<int> const& nums, int target) noexcept {
+  int search(std::vector<int> const& nums, int target) const noexcept {
     for (std::size_t l{}, r{nums.size() - 1}; l <= r;) {
       std::size_t m{(l + r) / 2};
       if (nums[m] == target) return m;
@@ -325,7 +325,7 @@ public:
     }
   };
   // https://leetcode.com/problems/median-of-two-sorted-arrays/
-  double findMedianSortedArrays(std::vector<int> const& nums1, std::vector<int> const& nums2) noexcept {
+  double findMedianSortedArrays(std::vector<int> const& nums1, std::vector<int> const& nums2) const noexcept {
     // ==== Case 1
     // a = [2], b = [1, 3], total_len = 3, half_len = 2
     // Loop 1: l = 0, r = 1, m1 = 0, m2 = 2 - 0 = 2
@@ -385,15 +385,15 @@ public:
   struct ListNode {
     int val;
     ListNode* next;
-    constexpr ListNode() noexcept : val{0}, next{nullptr} {}
-    constexpr ListNode(int x) noexcept : val{x}, next{nullptr} {}
-    constexpr ListNode(int x, ListNode* next) noexcept : val{x}, next{next} {}
-    constexpr ListNode(std::initializer_list<int> arr) noexcept : val{*arr.begin()}, next{nullptr} {
+    ListNode() noexcept : val{0}, next{nullptr} {}
+    ListNode(int x) noexcept : val{x}, next{nullptr} {}
+    ListNode(int x, ListNode* next) noexcept : val{x}, next{next} {}
+    ListNode(std::initializer_list<int> arr) noexcept : val{*arr.begin()}, next{nullptr} {
       ListNode* cur{this};
       for (std::initializer_list<int>::iterator i{arr.begin() + 1}; i != arr.end(); i++, cur = cur->next)
         cur->next = new ListNode{*i};
     }
-    constexpr ~ListNode() { delete next; }
+    ~ListNode() { delete next; }
   };
   ListNode* reverseList(ListNode* head) noexcept {
     // Recursive way

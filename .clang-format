@@ -11,8 +11,10 @@ AllowShortLoopsOnASingleLine: true
 AlwaysBreakTemplateDeclarations: No
 BreakAfterAttributes: Leave
 BreakBeforeConceptDeclarations: Never
-ColumnLimit: 0
+ColumnLimit: 114
+ContinuationIndentWidth: 2
 DerivePointerAlignment: false
+PenaltyExcessCharacter: 4
 PointerAlignment: Left
 EmptyLineBeforeAccessModifier: Never
 IndentWidth: 2

@@ -8,8 +8,7 @@ constexpr std::string_view type_name() noexcept {
   // e.g. "static_string type_name2() [T = const int &]"
   return {capt.cbegin() + capt.find('=') + 2, capt.cend() - 1};
 }
-export template <class Res = std::chrono::milliseconds>
-class Timer {
+export template <class Res = std::chrono::milliseconds> class Timer {
   using Clock = std::conditional_t<std::chrono::high_resolution_clock::is_steady,
                                    std::chrono::high_resolution_clock, std::chrono::steady_clock>;
 private:
