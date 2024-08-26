@@ -1,48 +1,54 @@
 // import leetcode;
 // import linalg;
 import std;
-template <class T> struct is_prvalue : std::true_type {};
-template <class T> struct is_prvalue<T&> : std::false_type {};
-template <class T> struct is_prvalue<T&&> : std::false_type {};
-
-template <class T> struct is_lvalue : std::false_type {};
-template <class T> struct is_lvalue<T&> : std::true_type {};
-template <class T> struct is_lvalue<T&&> : std::false_type {};
-
-template <class T> struct is_xvalue : std::false_type {};
-template <class T> struct is_xvalue<T&> : std::false_type {};
-template <class T> struct is_xvalue<T&&> : std::true_type {};
-
-void f() {}
-struct S {
-  int a;
-  enum e { A, B, C };
-  S() {}
-  S(int a) : a(a) {}
+class String {
+private:
+  std::size_t m_size;
+  char* m_data;
+public:
+  String() = default;
+  String(std::string_view const str) : m_size(str.size()), m_data(new char[str.size()]) {
+    std::println("Created!");
+    std::copy_n(str.cbegin(), m_size, m_data);
+  }
+  // Copy constructor
+  String(String const& other) : m_size(other.m_size), m_data(new char[other.m_size]) {
+    std::println("Copied!");
+    std::copy_n(other.m_data, m_size, m_data);
+  }
+  String(String&& older) noexcept : m_size(older.m_size), m_data{older.m_data} {
+    std::println("Moved!");
+    // There presents a problem: when the old one gets deleted, it's going to
+    // delete the m_data here as well. So the major thing that we need to do is to
+    // make the old one point to nothing.
+    older.m_size = 0, older.m_data = nullptr;
+  }
+  String& operator=(String&& older) noexcept { // define move assignment
+    if (this != &older) {
+      delete[] m_data; // Move assignment assumes that there already exists data in currently class, we shall clean the current class
+      std::println("Moved!\n");
+      m_size = older.m_size, m_data = older.m_data;
+      older.m_size = 0, older.m_data = nullptr;
+    }
+    return *this;
+  }
+  ~String() { std::println("Destroyed!"), delete[] m_data; }
+  void print() {
+    for (std::size_t i{}; i < m_size; i++) std::cout << m_data[i];
+    std::println("");
+  }
 };
+
 int main() {
-  int a{42};
-  int const& b{a};
-  int&& c{std::move(a)};
-  S s;
-  // '(T)' treat T as an expression, otherwise decltype() gets its type
-  static_assert(is_lvalue<decltype((f))>::value); // a function is lvalue,
-  static_assert(is_lvalue<decltype((a))>::value && // variable names are lvalues
-                is_lvalue<decltype((b))>::value && is_lvalue<decltype((c))>::value);
+  String apple{"Apple"}, dest;
 
-  static_assert(std::is_lvalue_reference_v<decltype(b)> && // Types and value categories are not correspondent
-                std::is_rvalue_reference_v<decltype(c)>);
+  std::print("Apple: "), apple.print();
+  std::print("Dest: "), dest.print();
 
-  static_assert(is_prvalue<decltype((42))>::value && is_prvalue<decltype((a + b))>::value &&
-                is_prvalue<decltype((S{}))>::value);
+  dest = std::move(apple); // With 'std::move()' invokes move assignment
 
-  static_assert(
-    is_prvalue<decltype((f()))>::value && // function's return value may be rvalue
-    is_lvalue<decltype(([&a]() -> int& { return a; }()))>::value && // Unless its return type is lvalue reference
-    is_prvalue<decltype((s.A))>::value // Member enumerators are rvalue
-  );
-  std::println("{}", (S{} = S{42}).a); // rvalue can be in left
-  // f = []() {} // Also, lvalue don't mean it's assignable
+  std::print("Apple: "), apple.print();
+  std::print("Dest: "), dest.print();
 }
 
 // int main() { leetcode_run(); }
