@@ -1,5 +1,5 @@
 [keys.normal]
-"F2" = [":write", ":run-shell-command ninja 1>/dev/null 2>&1 && ./hello" ]
-"F3" = ":run-shell-command ./hello"
-"F4" = ":run-shell-command ninja"
-"F5" = ":debug-start binary ./hello"
+"F2" = [":write", ":run-shell-command ninja -C build 1>/dev/null 2>&1 && ./build/hello" ]
+"F3" = ":run-shell-command ./build/hello"
+"F4" = ":run-shell-command ninja -C build"
+"F5" = ":debug-start binary ./build/hello"

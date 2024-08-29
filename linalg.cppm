@@ -9,8 +9,7 @@ export std::vector<std::vector<int>> operator*(std::vector<std::vector<int>> A, 
       for (std::size_t k{}; k < B.size(); k++) ret[i][j] += A[i][k] * B[k][j];
   return ret;
 }
-export template <typename A, typename B>
-constexpr auto operator*(A a, B b) {
+export template <typename A, typename B> constexpr auto operator*(A a, B b) {
   if (a[0].size() != b.size()) throw std::length_error("The matrix A's columns should be same with B's rows");
   std::array<std::array<int, b[0].size()>, a.size()> ret;
   for (std::size_t i{}; i < a.size(); i++)

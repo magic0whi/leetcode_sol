@@ -10,14 +10,38 @@ import :impl;
 // clang-format on
 export inline void leetcode_run() noexcept {
   Solution sol;
+  auto check{[](bool b) {
+    if (!b) throw std::runtime_error("Wrong Answer");
+    std::println("Accepted");
+  }};
   Timer<std::chrono::microseconds> timer;
-  std::println("Contains Duplicate: {}", sol.containsDuplicate({1, 1, 1, 3, 3, 4, 3, 2, 4, 2})), timer.count();
+  std::print("Contains Duplicate: ");
+  check(sol.containsDuplicate({1, 2, 3, 1}) == true && //
+        sol.containsDuplicate({1, 2, 3, 4}) == false && //
+        sol.containsDuplicate({1, 1, 1, 3, 3, 4, 3, 2, 4, 2}) == true);
+  timer.count();
 
-  std::println("Valid Anagram: {}", sol.isAnagram("anagram", "nagaram")), timer.count();
+  std::print("Valid Anagram: ");
+  check(sol.isAnagram("anagram", "nagaram") == true && //
+        sol.isAnagram("rat", "car") == false);
+  timer.count();
 
-  std::println("Two Sum: {}", sol.twoSum({2, 7, 11, 15}, 9)), timer.count();
+  std::print("Two Sum: ");
+  {
+    check(is_permutation(sol.twoSum({2, 7, 11, 15}, 9), std::vector{0, 1}) && //
+          is_permutation(sol.twoSum({3, 2, 4}, 6), std::vector{1, 2}) && //
+          is_permutation(sol.twoSum({3, 3}, 6), std::vector{0, 1}));
+    timer.count();
+  }
 
-  std::println("Group Anagrams: {}", sol.groupAnagrams({"eat", "tea", "tan", "ate", "nat", "bat"})), timer.count();
+  std::println("Group Anagrams: ");
+  {
+    check(is_permutation(sol.groupAnagrams({"eat", "tea", "tan", "ate", "nat", "bat"}),
+                         std::vector<std::vector<std::string>>{{"bat"}, {"nat", "tan"}, {"ate", "eat", "tea"}}) &&
+          is_permutation(sol.groupAnagrams({""}), std::vector<std::vector<std::string>>{{""}}) &&
+          is_permutation(sol.groupAnagrams({{"a"}}), std::vector<std::vector<std::string>>{{"a"}}));
+    timer.count();
+  }
 
   std::println("Top K Frequent Elements: {}", sol.topKFrequent({1, 1, 1, 2, 2, 3}, 2)), timer.count();
 
@@ -61,7 +85,8 @@ export inline void leetcode_run() noexcept {
 
   std::println("Best Time to Buy and Sell Stock: {}", sol.maxProfit({7, 1, 5, 3, 6, 4})), timer.count();
 
-  std::println("Longest Substring Without Repeating Characters: {}", sol.lengthOfLongestSubstring("abcabcbb")), timer.count();
+  std::println("Longest Substring Without Repeating Characters: {}", sol.lengthOfLongestSubstring("abcabcbb")),
+    timer.count();
 
   std::println("Permutation in String: {}", sol.checkInclusion("ab", "eidbaooo")), timer.count();
   std::println("Permutation in String: {}", sol.checkInclusion("ab", "eidboaoo")), timer.count();
@@ -81,7 +106,9 @@ export inline void leetcode_run() noexcept {
   }
   std::println("Evaluate Reverse Polish Notation: {}", sol.evalRPN({"2", "1", "+", "3", "*"})), timer.count();
   std::println("Evaluate Reverse Polish Notation: {}", sol.evalRPN({"4", "13", "5", "/", "+"})), timer.count();
-  std::println("Evaluate Reverse Polish Notation: {}", sol.evalRPN({"10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+"})), timer.count();
+  std::println("Evaluate Reverse Polish Notation: {}",
+               sol.evalRPN({"10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+"})),
+    timer.count();
 
   std::println("Find Minimum in Rotated Sorted Array: {}", sol.findMin({4, 5, 6, 7, 0, 1, 2})), timer.count();
   std::println("Search in Rotated Sorted Array {}", sol.search({4, 5, 6, 7, 0, 1, 2}, 0)), timer.count();
@@ -93,8 +120,11 @@ export inline void leetcode_run() noexcept {
     timemap.set("foo", "bar2", 4);
     std::println("Time Based Key-Value Store: {}, {}", timemap.get("foo", 4), timemap.get("foo", 5)), timer.count();
   }
-  std::println("Median of Two Sorted Arrays: {}", sol.findMedianSortedArrays({1, 2, 3, 4}, {1, 2, 3, 4, 5, 6, 7, 8})), timer.count();
-  std::println("Median of Two Sorted Arrays: {}", sol.findMedianSortedArrays({1, 2, 3, 4}, {1, 2, 3, 4, 5, 6, 7, 8, 9})), timer.count();
+  std::println("Median of Two Sorted Arrays: {}", sol.findMedianSortedArrays({1, 2, 3, 4}, {1, 2, 3, 4, 5, 6, 7, 8})),
+    timer.count();
+  std::println("Median of Two Sorted Arrays: {}",
+               sol.findMedianSortedArrays({1, 2, 3, 4}, {1, 2, 3, 4, 5, 6, 7, 8, 9})),
+    timer.count();
   std::println("Median of Two Sorted Arrays: {}", sol.findMedianSortedArrays({1, 3}, {2})), timer.count();
   std::println("Median of Two Sorted Arrays: {}", sol.findMedianSortedArrays({1, 2}, {3, 4})), timer.count();
   {
