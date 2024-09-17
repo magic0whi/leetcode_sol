@@ -31,7 +31,7 @@ if(CMAKE_BUILD_TYPE MATCHES PGOBUILD)
 endif()
 
 add_executable(hello)
-target_sources(hello PRIVATE hello.cpp)
+target_sources(hello PRIVATE main.cpp)
 
 add_library(leetcode STATIC)
 target_sources(leetcode PUBLIC FILE_SET CXX_MODULES FILES leetcode.cppm leetcode.internals.cppm leetcode.helpers.cppm)

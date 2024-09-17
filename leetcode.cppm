@@ -8,12 +8,12 @@ import std;
 _Pragma("GCC diagnostic pop")
 import :impl;
 // clang-format on
-export inline void leetcode_run() noexcept {
-  Solution sol;
+export inline void leetcode_run() {
   auto check{[](bool b) {
     if (!b) throw std::runtime_error("Wrong Answer");
     std::println("Accepted");
   }};
+  Solution sol;
   Timer<std::chrono::microseconds> timer;
   std::print("Contains Duplicate: ");
   check(sol.containsDuplicate({1, 2, 3, 1}) == true && //
@@ -128,23 +128,48 @@ export inline void leetcode_run() noexcept {
   std::println("Median of Two Sorted Arrays: {}", sol.findMedianSortedArrays({1, 3}, {2})), timer.count();
   std::println("Median of Two Sorted Arrays: {}", sol.findMedianSortedArrays({1, 2}, {3, 4})), timer.count();
   {
-    auto list_node{new Solution::ListNode{1, 2, 3, 4, 5}};
+    auto list{new Solution::ListNode{1, 2, 3, 4, 5}};
     std::println("Reverse Linked List"), timer.renew();
-    list_node = sol.reverseList(list_node);
+    list = sol.reverseList(list);
     timer.count();
-    std::print("Reverse Linked List: {}", list_node->val);
-    for (Solution::ListNode* head{list_node->next}; head; head = head->next) std::print(" {}", head->val);
+    std::print("Reverse Linked List: {}", list->val);
+    for (Solution::ListNode* head{list->next}; head; head = head->next) std::print(" {}", head->val);
     std::println("");
-    delete list_node;
+    delete list;
     timer.count();
   }
   {
     auto list1{new Solution::ListNode{1, 2, 4}}, list2{new Solution::ListNode{1, 3, 4}};
     std::println("Merge Two Sorted Lists"), timer.renew();
     auto merged_list{sol.mergeTwoLists(list1, list2)};
-    std::print("Reverse Linked List: {}", merged_list->val);
+    std::print("Merged Linked List: {}", merged_list->val);
     for (Solution::ListNode* head{merged_list->next}; head; head = head->next) std::print(" {}", head->val);
     std::println("");
     delete merged_list;
+  }
+  {
+    auto list{new Solution::ListNode{1, 2, 3, 4}};
+    std::println("Reorder List (1/2)"), timer.renew();
+    sol.reorderList(list);
+    timer.count();
+    std::print("ReorderLinked List:");
+    for (Solution::ListNode* cur{list}; int i : {1, 4, 2, 3}) {
+      if (!(cur->val == i)) throw std::runtime_error("Wrong Answer");
+      std::print(" {}", cur->val), cur = cur->next;
+    }
+    std::println("");
+    delete list;
+
+    list = new Solution::ListNode{1, 2, 3, 4, 5};
+    std::println("Reorder List (2/2)"), timer.renew();
+    sol.reorderList(list);
+    timer.count();
+    std::print("ReorderLinked List:");
+    for (Solution::ListNode* cur{list}; int i : {1, 5, 2, 4, 3}) {
+      if (!(cur->val == i)) throw std::runtime_error("Wrong Answer");
+      std::print(" {}", cur->val), cur = cur->next;
+    }
+    std::println("");
+    delete list;
   }
 }

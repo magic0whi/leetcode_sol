@@ -325,7 +325,7 @@ public:
         std::size_t m{(l + r) / 2};
         if (std::strong_ordering const cmp = values[m].first <=> timestamp; cmp < 0)
           ret = values[m].second, l = m + 1; // Elements' timestamp less than required, save to 'ret' for cases
-          //  that no exactly same timestamp
+        //  that no exactly same timestamp
         else if (cmp > 0) r = m - 1; // Or elements' timestamp bigger than required
         else return values[m].second; // Or equal
       }
@@ -427,12 +427,27 @@ public:
     return pre;
   }
   ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) noexcept {
-    ListNode dummy{}, *cur{&dummy};
+    ListNode dummy{}, *cur{&dummy}; // dummp node records the head
     for (; list1 && list2; cur = cur->next)
       if (list1->val < list2->val) cur->next = list1, list1 = list1->next;
       else cur->next = list2, list2 = list2->next;
     cur->next = list1 ? list1 : list2; // Concatenate remaining nodes
     cur = dummy.next, dummy.next = nullptr; // Prevents list1's and list2's objects being recycled
     return cur;
+  }
+  // https://leetcode.com/problems/reorder-list/
+  void reorderList(ListNode* head) noexcept {
+    ListNode *slow{head}, *fast{head->next};
+    while (fast && fast->next) // Odd or even
+      slow = slow->next, fast = fast->next->next;
+    // Reverse the second part
+    ListNode *cur{slow->next}, *prev{slow->next = nullptr};
+    for (ListNode* tmp; cur;) tmp = cur->next, cur->next = prev, prev = cur, cur = tmp;
+
+    for (ListNode *first{head}, *second{prev}; second;) {
+      ListNode *tmp1{first->next}, *tmp2{second->next};
+      first->next = second, second->next = tmp1;
+      first = tmp1, second = tmp2;
+    }
   }
 };
