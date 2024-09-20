@@ -325,7 +325,7 @@ public:
         std::size_t m{(l + r) / 2};
         if (std::strong_ordering const cmp = values[m].first <=> timestamp; cmp < 0)
           ret = values[m].second, l = m + 1; // Elements' timestamp less than required, save to 'ret' for cases
-        //  that no exactly same timestamp
+        // that no exactly same timestamp
         else if (cmp > 0) r = m - 1; // Or elements' timestamp bigger than required
         else return values[m].second; // Or equal
       }
@@ -427,7 +427,7 @@ public:
     return pre;
   }
   ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) noexcept {
-    ListNode dummy{}, *cur{&dummy}; // dummp node records the head
+    ListNode dummy{}, *cur{&dummy}; // dummy node records the head
     for (; list1 && list2; cur = cur->next)
       if (list1->val < list2->val) cur->next = list1, list1 = list1->next;
       else cur->next = list2, list2 = list2->next;
