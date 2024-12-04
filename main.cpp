@@ -1,4 +1,4 @@
 import leetcode;
 // import linalg;
 import std;
-int main() { leetcode_run(); }
+int main() { std::println("{:#b}", 1 << 3), leetcode_run(); }

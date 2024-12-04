@@ -115,16 +115,6 @@ public:
     }
     return true;
   }
-  // https://leetcode.com/problems/min-stack/description/
-  class MinStack {
-  private:
-    std::stack<std::pair<int, int>> m_stk;
-  public:
-    void push(int val) noexcept { m_stk.push({val, m_stk.empty() ? val : std::min(val, m_stk.top().second)}); }
-    void pop() noexcept { m_stk.pop(); }
-    int top() const noexcept { return m_stk.top().first; }
-    int getMin() const noexcept { return m_stk.top().second; }
-  };
   // https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/
   std::vector<int> twoSumII(std::vector<int> const& nums, int target) const noexcept {
     int l{}, r{static_cast<int>(nums.size()) - 1};
@@ -179,18 +169,6 @@ public:
       }
     return ret;
   }
-  // https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/
-  int findMin(std::vector<int> const& nums) const noexcept {
-    std::size_t l{}, r{nums.size() - 1};
-    int ret{std::numeric_limits<int>::max()};
-    while (l <= r) {
-      std::size_t m{(l + r) / 2};
-      ret = std::min(ret, nums[m]);
-      if (nums[m] > nums[r]) l = m + 1; // In left subarray, min in right side
-      else r = m - 1; // In right subarray, min either in left or current
-    }
-    return ret;
-  }
   // https://leetcode.com/problems/best-time-to-buy-and-sell-stock/
   int maxProfit(std::vector<int> const& prices) const noexcept {
     int lowest{prices[0]}, ret{};
@@ -208,6 +186,18 @@ public:
       // window's left to that char
       char_set.insert(s[r]);
       ret = std::max(ret, r - l + 1); // Update the size of the sliding window
+    }
+    return ret;
+  }
+  // https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/
+  int findMin(std::vector<int> const& nums) const noexcept {
+    std::size_t l{}, r{nums.size() - 1};
+    int ret{std::numeric_limits<int>::max()};
+    while (l <= r) {
+      std::size_t m{(l + r) / 2};
+      ret = std::min(ret, nums[m]);
+      if (nums[m] > nums[r]) l = m + 1; // In left subarray, min in right side
+      else r = m - 1; // In right subarray, min either in left or current
     }
     return ret;
   }
@@ -268,16 +258,29 @@ public:
     }
     return ret;
   }
+  // https://leetcode.com/problems/valid-parentheses/
   bool isValid(std::string const& s) const noexcept {
     std::stack<char> open_parens;
     std::unordered_map<char, char> close_open = {{')', '('}, {'}', '{'}, {']', '['}};
     for (char const c : s)
       if (!close_open.contains(c)) open_parens.push(c); // If opening parenthese, store to stack.
-      else if (open_parens.empty() || open_parens.top() != close_open[c]) return false; // If closing parenthese,
-      // check whether stack is empty or a corresponding opening parenthese in the top of stack.
+      else if (open_parens.empty() || open_parens.top() != close_open[c])
+        return false; // If closing parenthese, check whether stack is empty or a
+                      // correspondent opening parenthese is in the top of stack.
       else open_parens.pop();
     return open_parens.empty();
   }
+  // https://leetcode.com/problems/min-stack/
+  class MinStack {
+  private:
+    std::stack<std::pair<int, int>> m_stk;
+  public:
+    void push(int val) noexcept { m_stk.push({val, m_stk.empty() ? val : std::min(val, m_stk.top().second)}); }
+    void pop() noexcept { m_stk.pop(); }
+    int top() const noexcept { return m_stk.top().first; }
+    int getMin() const noexcept { return m_stk.top().second; }
+  };
+  // https://leetcode.com/problems/evaluate-reverse-polish-notation/
   int evalRPN(std::vector<std::string> const& tokens) const noexcept {
     std::stack<int> stk;
     auto pop{[&stk]() noexcept {
@@ -295,6 +298,15 @@ public:
       } else stk.push(stoi(c));
     return stk.top();
   }
+  // TODO
+  // https://leetcode.com/problems/generate-parentheses/
+  // https://leetcode.com/problems/daily-temperatures/
+  // https://leetcode.com/problems/car-fleet/
+  // https://leetcode.com/problems/largest-rectangle-in-histogram/
+  // https://leetcode.com/problems/binary-search/
+  // https://leetcode.com/problems/search-a-2d-matrix/
+  // https://leetcode.com/problems/koko-eating-bananas/
+  // https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/
   // https://leetcode.com/problems/search-in-rotated-sorted-array/
   int search(std::vector<int> const& nums, int target) const noexcept {
     for (std::size_t l{}, r{nums.size() - 1}; l <= r;) {
@@ -426,6 +438,7 @@ public:
     }
     return pre;
   }
+  // https://leetcode.com/problems/merge-two-sorted-lists/
   ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) noexcept {
     ListNode dummy{}, *cur{&dummy}; // dummy node records the head
     for (; list1 && list2; cur = cur->next)
